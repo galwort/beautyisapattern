@@ -3,72 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inspiration through P5.js</title>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+    <title>Express Yourself with p5.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
         body {
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             height: 100vh;
-            background: #f5f5f5;
-            overflow: hidden;
             margin: 0;
+            background: linear-gradient(135deg, #FF5F6D, #FFC371);
         }
     </style>
 </head>
 <body>
+    <script>
+        let colors = ['#FF5F6D', '#FFC371', '#FFAA00', '#FFE600', '#39F4F4'];
 
-<script>
-    function setup() {
-        createCanvas(windowWidth, windowHeight);
-        noLoop();
-    }
-
-    function draw() {
-        background(245);
-        translate(width / 2, height / 2);
-        let numStars = 50;
-
-        // Create a serene night sky
-        for (let i = 0; i < numStars; i++) {
-            drawStar(random(-width/2, width/2), random(-height/2, height/2), random(5, 15), random(12, 25), 5);
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            noLoop();
         }
 
-        // Radiant central sun
-        drawSun(0, 0, 150);
-    }
+        function draw() {
+            for(let i = 0; i < 100; i++) {
+                let radius = random(10, 100);
+                let x = random(width);
+                let y = random(height);
+                let colorIndex = floor(random(colors.length));
 
-    // Function to draw a star
-    function drawStar(x, y, radius1, radius2, npoints) {
-        let angle = TWO_PI / npoints;
-        let halfAngle = angle / 2.0;
-        stroke(255, 215, 0);
-        strokeWeight(2);
-        fill(255, 223, 0);
-        beginShape();
-        for (let a = 0; a < TWO_PI; a += angle) {
-            let sx = x + cos(a) * radius2;
-            let sy = y + sin(a) * radius2;
-            vertex(sx, sy);
-            sx = x + cos(a + halfAngle) * radius1;
-            sy = y + sin(a + halfAngle) * radius1;
-            vertex(sx, sy);
+                fill(colors[colorIndex]);
+                noStroke();
+                circle(x, y, radius);
+
+                // Adding expressive lines
+                stroke(255);
+                strokeWeight(2);
+                line(x, y, x + random(-100, 100), y + random(-100, 100));
+            }
         }
-        endShape(CLOSE);
-    }
-
-    // Function to draw a luminous sun-like body
-    function drawSun(x, y, radius) {
-        noStroke();
-        let gradient = drawingContext.createRadialGradient(x, y, radius * 0.5, x, y, radius);
-        gradient.addColorStop(0, 'rgba(255, 223, 0, 1)');
-        gradient.addColorStop(1, 'rgba(255, 223, 0, 0)');
-        drawingContext.fillStyle = gradient;
-        ellipse(x, y, 2 * radius);
-    }
-
-</script>
-
+    </script>
 </body>
 </html>
