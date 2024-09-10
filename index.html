@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>The Power of Choice</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background: radial-gradient(circle at center, lightblue, white);
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  </head>
+  <body>
+    <script>
+      let angle = 0;  // Initialize the angle for animated purposes
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+      }
+
+      function draw() {
+        background(255);
+        translate(width / 2, height / 2);
+
+        for (let i = 0; i < 12; i++) {
+          push();
+          rotate((TWO_PI / 12) * i + angle);
+
+          stroke(80);
+          fill(color(map(sin(angle - i), -1, 1, 150, 255),
+                     map(sin(angle + i), -1, 1, 150, 220),
+                     map(cos(angle - i), -1, 1, 240, 255)));
+
+          ellipse(0, 200, 150, 50);
+          beginShape();
+          for (let j = 0; j < 4; j++) {
+            	vertex(85 * cos(j * PI / 2), 200 + 40 * sin(j * PI / 2));
+          }
+          endShape(CLOSE);
+
+          pop();
+        }
+
+        angle += 0.01;  // Gradual rotation leading to smooth movement
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+
+    </script>
+  </body>
+</html>
