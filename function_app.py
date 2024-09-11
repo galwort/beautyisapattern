@@ -36,7 +36,8 @@ def refresh(myTimer: func.TimerRequest) -> None:
         "Please create an HTML file using p5, "
         "drawing inspiration from the following quote: "
         f'"{quote}"\n'
-        "Do not reference the quote in the output."
+        "The output should be animated. "
+        "Do not add text in the output."
     )
 
     completion = client.beta.chat.completions.parse(
