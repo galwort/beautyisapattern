@@ -28,7 +28,7 @@ def refresh(myTimer: func.TimerRequest) -> None:
     github_response = get(url, headers=headers)
     sha = github_response.json()["sha"]
 
-    quote_response = get("https://api.quotable.io/random")
+    quote_response = get("https://api.quotable.io/random", verify=False)
     data = quote_response.json()
     quote = data["content"]
 
