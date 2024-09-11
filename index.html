@@ -3,45 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Express Yourself with p5.js</title>
+    <title>Principles Animation</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+        body, html {
             margin: 0;
-            background: linear-gradient(135deg, #FF5F6D, #FFC371);
+            padding: 0;
+            overflow: hidden;
+            background-color: #f3f4f6;
+        }
+        canvas {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <script>
-        let colors = ['#FF5F6D', '#FFC371', '#FFAA00', '#FFE600', '#39F4F4'];
 
-        function setup() {
-            createCanvas(windowWidth, windowHeight);
-            noLoop();
+<script>
+    let angle = 0; // Initial angle for rotation
+    
+    function setup() {
+        createCanvas(windowWidth, windowHeight);
+    }
+
+    function draw() {
+        background(243, 244, 246);
+
+        let numLines = 8; // Number of lines forming the rigid structure
+        let lineLength = min(width, height) / 3;
+
+        // Translate to center of the canvas
+        translate(width / 2, height / 2);
+
+        stroke(0);
+        strokeWeight(2);
+
+        // Generate each line in a circular pattern
+        for (let i = 0; i < numLines; i++) {
+            push();
+            rotate(angle + (TWO_PI / numLines) * i);
+            line(-lineLength / 2, 0, lineLength / 2, 0);
+            pop();
         }
 
-        function draw() {
-            for(let i = 0; i < 100; i++) {
-                let radius = random(10, 100);
-                let x = random(width);
-                let y = random(height);
-                let colorIndex = floor(random(colors.length));
+        // Animation to rotate the lines
+        angle += radians(0.5);
 
-                fill(colors[colorIndex]);
-                noStroke();
-                circle(x, y, radius);
+        // Limit the frame rate to slow down the animation
+        frameRate(30);
+    }
+</script>
 
-                // Adding expressive lines
-                stroke(255);
-                strokeWeight(2);
-                line(x, y, x + random(-100, 100), y + random(-100, 100));
-            }
-        }
-    </script>
 </body>
 </html>
