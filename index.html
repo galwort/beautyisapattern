@@ -3,56 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Principles Animation</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <title>Inspired Animation</title>
+    <!-- Include the p5.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
     <style>
-        body, html {
+        body {
             margin: 0;
-            padding: 0;
             overflow: hidden;
-            background-color: #f3f4f6;
-        }
-        canvas {
-            display: block;
         }
     </style>
 </head>
 <body>
 
-<script>
-    let angle = 0; // Initial angle for rotation
-    
-    function setup() {
-        createCanvas(windowWidth, windowHeight);
-    }
-
-    function draw() {
-        background(243, 244, 246);
-
-        let numLines = 8; // Number of lines forming the rigid structure
-        let lineLength = min(width, height) / 3;
-
-        // Translate to center of the canvas
-        translate(width / 2, height / 2);
-
-        stroke(0);
-        strokeWeight(2);
-
-        // Generate each line in a circular pattern
-        for (let i = 0; i < numLines; i++) {
-            push();
-            rotate(angle + (TWO_PI / numLines) * i);
-            line(-lineLength / 2, 0, lineLength / 2, 0);
-            pop();
+    <script>
+        // Variables for animated elements
+        let circles = [];
+        let numCircles = 50;
+        
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < numCircles; i++) {
+                circles.push(new Circle(random(width), random(height), random(10, 50)));
+            }
         }
 
-        // Animation to rotate the lines
-        angle += radians(0.5);
+        function draw() {
+            background(30, 30, 70);
+            // Update and show each circle
+            for (let circle of circles) {
+                circle.move();
+                circle.display();
+            }
+        }
 
-        // Limit the frame rate to slow down the animation
-        frameRate(30);
-    }
-</script>
+        // Circle class to define properties and methods
+        class Circle {
+            constructor(x, y, size) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.color = {
+                    r: random(150, 255),
+                    g: random(100, 200),
+                    b: random(200, 255)
+                };
+                this.speedX = random(-1, 1);
+                this.speedY = random(-1, 1);
+            }
+
+            // Method to move the circle
+            move() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Reverse direction on edges
+                if (this.x < 0 || this.x > width) {
+                    this.speedX *= -1;
+                }
+                if (this.y < 0 || this.y > height) {
+                    this.speedY *= -1;
+                }
+            }
+
+            // Method to display the circle
+            display() {
+                noStroke();
+                fill(this.color.r, this.color.g, this.color.b, 150);
+                ellipse(this.x, this.y, this.size, this.size);
+            }
+        }
+    </script>
 
 </body>
 </html>
