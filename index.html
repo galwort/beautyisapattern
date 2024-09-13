@@ -1,59 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P5.js Inspired Animation</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Flight of Resistance</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #8cc0de, #fcf1cd);
-        }
-        canvas {
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-        }
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: #e1e8eb;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <script>
-        let time = 0;
+      let angle = 0;
+      let bird;
+      let airResistance = -0.02;
 
-        function setup() {
-            createCanvas(600, 400);
-            smooth();
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        bird = new Bird();
+      }
+
+      function draw() {
+        background('#e1e8eb');
+        bird.fly();
+        bird.display();
+      }
+
+      class Bird {
+        constructor() {
+          this.pos = createVector(width / 2, height / 2);
+          this.vel = createVector(2, 0);
+          this.gravity = createVector(0, 0.1);
         }
 
-        function draw() {
-            background(240);
-            noFill();
-            translate(width / 2, height / 2);
+        fly() {
+          let resistance = this.vel.copy();
+          resistance.mult(airResistance);
+          this.vel.add(this.gravity);
+          this.vel.add(resistance);
 
-            // Colors inspire the duality of gentleness and harshness
-            let colors = [color(71, 188, 192, 150), color(243, 156, 18, 100)];
+          this.pos.add(this.vel);
 
-            // Dynamic Shapes
-            for (let i = 0; i < TWO_PI; i += PI / 10) {
-                let x = cos(i + time) * 100;
-                let y = sin(i + time) * 100;
-                // Ternary shapes representing choice with subtle changes
-                let shapeOffset = (sin(time + i * 2) > 0) ? 20 : 15;
-                stroke(colors[int((sin(time + i) > 0) ? 0 : 1)]);
+          if (this.pos.y > height || this.pos.y < 0) {
+            this.vel.y *= -1;
+            this.pos.y = constrain(this.pos.y, 0, height);
+          }
+          if (this.pos.x > width || this.pos.x < 0) {
+            this.vel.x *= -1;
+            this.pos.x = constrain(this.pos.x, 0, width);
+          }
 
-                // Line representing speech influence
-                line(0, 0, x, y);
-
-                // Dots/Halos representing kind/malicious influence
-                ellipse(x, y, shapeOffset, shapeOffset);
-            }
-
-            time += 0.01; // Increment to create a flowing animation structure
+          angle += 0.02;
         }
+
+        display() {
+          push();
+          translate(this.pos.x, this.pos.y);
+          rotate(angle);
+          fill('#ff6f61');
+          noStroke();
+          ellipse(0, 0, 40, 15); // Body
+          pop();
+        }
+      }
     </script>
-</body>
+  </body>
 </html>
