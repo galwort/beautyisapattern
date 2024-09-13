@@ -3,63 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>p5.js Inspired Animation</title>
+    <title>P5.js Inspired Animation</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        body, html {
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
-            overflow: hidden;
+            background: linear-gradient(135deg, #8cc0de, #fcf1cd);
         }
         canvas {
-            display: block;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
         }
     </style>
 </head>
 <body>
-<script>
-    let angle = 0;
-    let innerRadius = 50;
-    let outerRadius = 200;
+    <script>
+        let time = 0;
 
-    function setup() {
-        createCanvas(windowWidth, windowHeight);
-        noFill();
-        stroke(255);
-        strokeWeight(2);
-    }
-
-    function draw() {
-        background(30);
-        translate(width / 2, height / 2);
-
-        // Outer rotating circle (represents conquering others)
-        stroke(100, 200, 255, 180);
-        beginShape();
-        for (let i = 0; i < TWO_PI; i += 0.1) {
-            let x = outerRadius * cos(i + angle);
-            let y = outerRadius * sin(i + angle);
-            vertex(x, y);
+        function setup() {
+            createCanvas(600, 400);
+            smooth();
         }
-        endShape(CLOSE);
-        
-        // Inner pulsating circle (represents self-conquest)
-        stroke(255, 100, 100, 180);
-        beginShape();
-        let innerSize = innerRadius + sin(frameCount * 0.05) * 20;
-        for (let i = 0; i < TWO_PI; i += 0.1) {
-            let x = innerSize * cos(i - angle);
-            let y = innerSize * sin(i - angle);
-            vertex(x, y);
+
+        function draw() {
+            background(240);
+            noFill();
+            translate(width / 2, height / 2);
+
+            // Colors inspire the duality of gentleness and harshness
+            let colors = [color(71, 188, 192, 150), color(243, 156, 18, 100)];
+
+            // Dynamic Shapes
+            for (let i = 0; i < TWO_PI; i += PI / 10) {
+                let x = cos(i + time) * 100;
+                let y = sin(i + time) * 100;
+                // Ternary shapes representing choice with subtle changes
+                let shapeOffset = (sin(time + i * 2) > 0) ? 20 : 15;
+                stroke(colors[int((sin(time + i) > 0) ? 0 : 1)]);
+
+                // Line representing speech influence
+                line(0, 0, x, y);
+
+                // Dots/Halos representing kind/malicious influence
+                ellipse(x, y, shapeOffset, shapeOffset);
+            }
+
+            time += 0.01; // Increment to create a flowing animation structure
         }
-        endShape(CLOSE);
-
-        angle += 0.01;
-    }
-
-    function windowResized() {
-        resizeCanvas(windowWidth, windowHeight);
-    }
-</script>
+    </script>
 </body>
 </html>
