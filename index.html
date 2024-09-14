@@ -3,56 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Future is Open</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <title>Reflection on Technology and Life</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
-        body {
+        body, html {
             margin: 0;
+            padding: 0;
             overflow: hidden;
         }
+        canvas {
+            display: block;
+        }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            noStroke();
+        }
+
+        function draw() {
+            background(0);
+
+            // Simulate a warping grid to represent the rapid flow and integration of technology
+            for (let y = 0; y < height; y += 40) {
+                beginShape(TRIANGLE_STRIP);
+                for (let x = 0; x <= width; x += 40) {
+                    let xOffset = (x + frameCount * 2) % width;  // Revolution of points
+                    let yOffset = sin(TWO_PI * (x + frameCount) / width) * 50;  // Breathing wave effect
+                    vertex(xOffset, y + yOffset + sin(x * 0.01 + frameCount * 0.05) * 20);
+                    vertex(xOffset, y + 40 + yOffset + sin(x * 0.01 + frameCount * 0.05 + PI) * 20);
+                }
+                endShape();
+            }
+
+            // Draw moving orbs to represent vibrant, swirling ideas
+            for (let i = 0; i < 5; i++) {
+                let orbX = width/2 + cos(TWO_PI * i / 5 + frameCount * 0.03) * 150;
+                let orbY = height/2 + sin(TWO_PI * i / 5 + frameCount * 0.03) * 150;
+                fill(150 + i * 20, 200, 255, 150);
+                ellipse(orbX, orbY, 50, 50);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
 </head>
 <body>
-
-<script>
-    let colors = [], index = 0;
-    
-    function setup() {
-        createCanvas(windowWidth, windowHeight);
-        noStroke();
-        // Generate a palette of colors
-        for (let i = 0; i < 360; i += 15) {
-            colors.push(color(i, 100, 100));
-        }
-    }
-
-    function draw() {
-        // Draw rotating arcs of color symbolizing the unfolding future
-        translate(width / 2, height / 2);
-        rotate(frameCount * 0.01);
-        for (let i = 0; i < 25; i++) {
-            fill(colors[(i + frameCount / 10) % colors.length]);
-            arc(0, 0, width / 2, height / 2, i * TWO_PI / 25, (i + 1) * TWO_PI / 25);
-        }
-        // Draw a dynamic visual in the center representing the present moment
-        fill(255);
-        let t = millis() / 1000;
-        beginShape();
-        for (let a = 0; a < TWO_PI; a += 0.1) {
-            let r = 200 + 25 * noise(index, t);
-            let x = r * cos(a);
-            let y = r * sin(a);
-            vertex(x, y);
-            index += 0.01;
-        }
-        endShape(CLOSE);
-    }
-
-    function windowResized() {
-        resizeCanvas(windowWidth, windowHeight);
-    }
-</script>
-
 </body>
 </html>
