@@ -1,80 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technology Paradox</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>War and Peace Visualization</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #000;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 </head>
-
 <body>
     <script>
-        let particles = [];
-        let dark = true;
+        let circles = [];
+        let colors = ['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557'];
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < 200; i++) {
-                particles.push(new Particle(random(width), random(height)));
+            noStroke(); // No outline on shapes
+            frameRate(60);
+
+            // Initializing a random number of circles
+            for (let i = 0; i < random(30, 50); i++) {
+                addCircle();
             }
-            setInterval(() => {
-                dark = !dark;
-            }, 5000);
         }
 
         function draw() {
-            background(dark ? 0 : 255);
-            particles.forEach(particle => {
-                particle.update();
-                particle.show();
-            });
+            background(30,30,30); // Dark background
 
-            if (dark) {
-                fill(255, 50);
-            } else {
-                fill(0, 50);
+            // Updating and displaying all circles
+            for (let circle of circles) {
+                circle.update();
+                circle.display();
             }
 
-            noStroke();
-            ellipse(width / 2, height / 2, 50, 50);
+            // Adding a moving wave across the animation
+            strokeWeight(4);
+            stroke(255, 100);
+            noFill();
+            let amp = 50;
+            let freq = 0.02;
+            beginShape();
+            for (let x = 0; x <= width; x += 20) {
+                let y = height/2 + sin(x * freq + frameCount * 0.05) * amp;
+                vertex(x, y);
+            }
+            endShape();
         }
 
-        class Particle {
-            constructor(x, y) {
+        function addCircle() {
+            let x = random(width);
+            let y = random(height);
+            let diameter = random(25, 100);
+            let col = random(colors);
+            circles.push(new Circle(x, y, diameter, col));
+        }
+
+        class Circle {
+            constructor(x, y, diameter, col) {
                 this.x = x;
                 this.y = y;
-                this.vx = random(-2, 2);
-                this.vy = random(-2, 2);
+                this.diameter = diameter;
+                this.col = col;
+                this.xSpeed = random(-1, 1);
+                this.ySpeed = random(-1, 1);
             }
 
             update() {
-                this.x += this.vx;
-                this.y += this.vy;
+                this.x += this.xSpeed;
+                this.y += this.ySpeed;
 
-                if (this.x < 0 || this.x > width) {
-                    this.vx *= -1;
+                // Bounce off edges
+                if (this.x > width || this.x < 0) {
+                    this.xSpeed *= -1;
                 }
-                if (this.y < 0 || this.y > height) {
-                    this.vy *= -1;
+
+                if (this.y > height || this.y < 0) {
+                    this.ySpeed *= -1;
                 }
             }
 
-            show() {
-                stroke(dark ? 255 : 0);
-                strokeWeight(2);
-                point(this.x, this.y);
+            display() {
+                fill(this.col);
+                ellipse(this.x, this.y, this.diameter);
             }
         }
     </script>
 </body>
-
 </html>
