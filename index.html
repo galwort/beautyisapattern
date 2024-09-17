@@ -3,92 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>War and Peace Visualization</title>
+    <title>Inspiration Animation</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
+    <style> 
         body {
             margin: 0;
             overflow: hidden;
+            background: #333;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-</head>
-<body>
-    <script>
-        let circles = [];
-        let colors = ['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557'];
-
+    <script> 
+        let particles = [];
+        
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            noStroke(); // No outline on shapes
-            frameRate(60);
-
-            // Initializing a random number of circles
-            for (let i = 0; i < random(30, 50); i++) {
-                addCircle();
+            for (let i = 0; i < 200; i++) {
+                particles.push(new Particle(random(width), random(height)));
             }
         }
-
+        
         function draw() {
-            background(30,30,30); // Dark background
-
-            // Updating and displaying all circles
-            for (let circle of circles) {
-                circle.update();
-                circle.display();
-            }
-
-            // Adding a moving wave across the animation
-            strokeWeight(4);
-            stroke(255, 100);
-            noFill();
-            let amp = 50;
-            let freq = 0.02;
-            beginShape();
-            for (let x = 0; x <= width; x += 20) {
-                let y = height/2 + sin(x * freq + frameCount * 0.05) * amp;
-                vertex(x, y);
-            }
-            endShape();
+            background(51, 51, 51, 25);
+            particles.forEach(p => { 
+                p.update();
+                p.show();
+                p.avoidFearField();
+            });
         }
-
-        function addCircle() {
-            let x = random(width);
-            let y = random(height);
-            let diameter = random(25, 100);
-            let col = random(colors);
-            circles.push(new Circle(x, y, diameter, col));
-        }
-
-        class Circle {
-            constructor(x, y, diameter, col) {
-                this.x = x;
-                this.y = y;
-                this.diameter = diameter;
-                this.col = col;
-                this.xSpeed = random(-1, 1);
-                this.ySpeed = random(-1, 1);
+        
+        class Particle {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.vel = p5.Vector.random2D();
+                this.vel.mult(random(0.5, 3));
+                this.acc = createVector();
+                this.decay = 0.97; // Slow decay representing doubts
             }
-
+            
             update() {
-                this.x += this.xSpeed;
-                this.y += this.ySpeed;
-
-                // Bounce off edges
-                if (this.x > width || this.x < 0) {
-                    this.xSpeed *= -1;
-                }
-
-                if (this.y > height || this.y < 0) {
-                    this.ySpeed *= -1;
+                this.vel.add(this.acc);
+                this.vel.mult(this.decay); // Represents slowing due to doubt 
+                this.pos.add(this.vel);
+                this.acc.mult(0);
+                
+                // Loop around screen
+                if (this.pos.x > width) this.pos.x = 0;
+                if (this.pos.x < 0) this.pos.x = width;
+                if (this.pos.y > height) this.pos.y = 0;
+                if (this.pos.y < 0) this.pos.y = height;
+            }
+            
+            show() {
+                stroke(255);
+                strokeWeight(3);
+                point(this.pos.x, this.pos.y);
+            }
+            
+            avoidFearField() {
+                // Create a "repulsive force" at the center mimicking fears
+                let fearCenter = createVector(width/2, height/2);
+                let force = p5.Vector.sub(this.pos, fearCenter);
+                let d = force.mag();
+                
+                // Add repulsion proportional to distance squared
+                if (d < 200) {
+                    force.setMag(50 / (d * d));
+                    this.applyForce(force);
                 }
             }
-
-            display() {
-                fill(this.col);
-                ellipse(this.x, this.y, this.diameter);
+            
+            applyForce(force) {
+                this.acc.add(force);
             }
         }
+    
     </script>
-</body>
+</head>
+<body></body>
 </html>
