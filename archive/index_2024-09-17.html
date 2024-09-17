@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love & Life Animation</title>
+    <!-- p5.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <!-- Include a favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+        let hearts = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            frameRate(30);
+            // Initialize some hearts on the canvas
+            for (let i = 0; i < 20; i++) {
+                hearts.push(new Heart(random(width), random(height)));
+            }
+        }
+
+        function draw() {
+            background('#FFD700'); // Golden backdrop
+            hearts.forEach(heart => {
+                heart.move();
+                heart.display();
+            });
+
+            // Add new hearts randomly
+            if (random(1) < 0.05) {
+                hearts.push(new Heart(random(width), 0));
+            }
+
+            // Remove hearts that are out of bounds
+            hearts = hearts.filter(heart => heart.y < height);
+        }
+
+        class Heart {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = random(15, 40);
+                this.speed = random(2, 5);
+                this.color = color(random(255), 100, random(255));
+            }
+
+            move() {
+                this.y += this.speed;
+            }
+
+            display() {
+                fill(this.color);
+                noStroke();
+                push();
+                translate(this.x, this.y);
+                beginShape();
+                vertex(0, -this.size / 4);
+                bezierVertex(-this.size / 2, -3 * this.size / 4, -this.size, this.size / 4, 0, this.size / 1.5);
+                bezierVertex(this.size, this.size / 4, this.size / 2, -3 * this.size / 4, 0, -this.size / 4);
+                endShape(CLOSE);
+                pop();
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</head>
+<body>
+    <!-- The canvas will be drawn here by p5.js -->
+</body>
+</html>
