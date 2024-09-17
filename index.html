@@ -3,82 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inspiration Animation</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style> 
-        body {
+    <title>Animated Inspiration</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body, html {
             margin: 0;
+            padding: 0;
             overflow: hidden;
-            background: #333;
+            background-color: #F9F8EF;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script> 
-        let particles = [];
-        
+</head>
+<body>
+    <script>
+        let seeds = [];
+        let seedCount = 10;
+
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < 200; i++) {
-                particles.push(new Particle(random(width), random(height)));
+            angleMode(DEGREES);
+
+            // Initialize seed positions
+            for(let i = 0; i < seedCount; i++) {
+                seeds.push({
+                    xPos: random(width),
+                    yPos: random(height),
+                    size: random(15, 25),
+                    angle: random(360),
+                    speed: random(0.5,1.5)
+                });
             }
         }
-        
+
         function draw() {
-            background(51, 51, 51, 25);
-            particles.forEach(p => { 
-                p.update();
-                p.show();
-                p.avoidFearField();
-            });
-        }
-        
-        class Particle {
-            constructor(x, y) {
-                this.pos = createVector(x, y);
-                this.vel = p5.Vector.random2D();
-                this.vel.mult(random(0.5, 3));
-                this.acc = createVector();
-                this.decay = 0.97; // Slow decay representing doubts
-            }
-            
-            update() {
-                this.vel.add(this.acc);
-                this.vel.mult(this.decay); // Represents slowing due to doubt 
-                this.pos.add(this.vel);
-                this.acc.mult(0);
-                
-                // Loop around screen
-                if (this.pos.x > width) this.pos.x = 0;
-                if (this.pos.x < 0) this.pos.x = width;
-                if (this.pos.y > height) this.pos.y = 0;
-                if (this.pos.y < 0) this.pos.y = height;
-            }
-            
-            show() {
-                stroke(255);
-                strokeWeight(3);
-                point(this.pos.x, this.pos.y);
-            }
-            
-            avoidFearField() {
-                // Create a "repulsive force" at the center mimicking fears
-                let fearCenter = createVector(width/2, height/2);
-                let force = p5.Vector.sub(this.pos, fearCenter);
-                let d = force.mag();
-                
-                // Add repulsion proportional to distance squared
-                if (d < 200) {
-                    force.setMag(50 / (d * d));
-                    this.applyForce(force);
-                }
-            }
-            
-            applyForce(force) {
-                this.acc.add(force);
+            background('#FBE6C2');
+            for(let seed of seeds) {
+                drawSeed(seed);
+                moveSeed(seed);
             }
         }
-    
+
+        function drawSeed(seed) {
+            push();
+            translate(seed.xPos, seed.yPos);
+            rotate(seed.angle);
+            noStroke();
+
+            // Draw rounded seed shape
+            fill('#FF6F61');
+            ellipse(0, 0, seed.size, seed.size / 1.2);
+            pop();
+        }
+
+        function moveSeed(seed) {
+            seed.yPos -= seed.speed;
+            seed.angle += 1;
+            // Wrap the seeds around
+            if (seed.yPos < -seed.size) {
+                seed.yPos = height + seed.size;
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas(windowWidth, windowHeight);
+        });
     </script>
-</head>
-<body></body>
+</body>
 </html>
