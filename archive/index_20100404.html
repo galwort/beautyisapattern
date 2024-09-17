@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beauty Pattern</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let points = [];
+      let numPoints = 300;
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        for (let i = 0; i < numPoints; i++) {
+          points.push(createVector(random(width), random(height)));
+        }
+      }
+
+      function draw() {
+        background(0, 10); // Leave a trail effect
+        stroke(255, 204, 100, 100);
+        strokeWeight(1);
+        noFill();
+
+        for (let i = 0; i < points.length; i++) {
+          let p1 = points[i];
+          for (let j = i + 1; j < points.length; j++) {
+            let p2 = points[j];
+            let distance = dist(p1.x, p1.y, p2.x, p2.y);
+            if (distance < 100) {
+              strokeWeight(map(distance, 0, 100, 2, 0.5)); // Dynamic stroke weight
+              line(p1.x, p1.y, p2.x, p2.y);
+            }
+          }
+        }
+
+        // Move points slightly in a random pattern
+        for (let p of points) {
+          p.x += random(-1, 1);
+          p.y += random(-1, 1);
+
+          // Wrap around edges
+          if (p.x > width) p.x = 0;
+          if (p.x < 0) p.x = width;
+          if (p.y > height) p.y = 0;
+          if (p.y < 0) p.y = height;
+        }
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+    </script>
+  </body>
+</html>

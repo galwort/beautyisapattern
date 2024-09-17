@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <title>Archive</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <body>
+    <table id="csvTable"></table>
+
+    <script>
+      fetch("archive.csv")
+        .then((response) => response.text())
+        .then((data) => {
+          const rows = data.split("\n");
+          const table = document.getElementById("csvTable");
+
+          rows.forEach((row) => {
+            const tr = document.createElement("tr");
+            row.split(",").forEach((cell) => {
+              const td = document.createElement("td");
+              td.textContent = cell;
+              tr.appendChild(td);
+            });
+            table.appendChild(tr);
+          });
+        });
+    </script>
+  </body>
+</html>
