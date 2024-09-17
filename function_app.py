@@ -1,11 +1,10 @@
 import azure.functions as func
-from base64 import b64encode
+from base64 import b64decode
 from datetime import datetime
-import json
-import os
 from requests import get, post, patch
 from pydantic import BaseModel
 from openai import OpenAI
+from os import getenv
 
 
 class indexHTML(BaseModel):
@@ -23,7 +22,7 @@ client = OpenAI()
     use_monitor=False,
 )
 def refresh(myTimer: func.TimerRequest) -> None:
-    github_token = os.getenv("GITHUB_TOKEN")
+    github_token = getenv("GITHUB_TOKEN")
     headers = {"Authorization": f"Bearer {github_token}"}
     repo_owner = "galwort"
     repo_name = "beautyisapattern"
@@ -79,9 +78,31 @@ def refresh(myTimer: func.TimerRequest) -> None:
     index_url = f"{base_url}/contents/index.html"
     index_response = get(index_url, headers=headers)
     index_response.raise_for_status()
-    current_index_content = index_response.json()["content"]
-    decoded_content = b64encode(current_index_content.encode("utf-8")).decode("utf-8")
-    archive_blob_sha = create_blob(decoded_content)
+    current_index_content_encoded = index_response.json()["content"]
+    current_index_content = b64decode(current_index_content_encoded).decode("utf-8")
+    archive_blob_sha = create_blob(current_index_content)
+
+    archive_csv_url = f"{base_url}/contents/archive.csv"
+    archive_csv_response = get(archive_csv_url, headers=headers)
+
+    if archive_csv_response.status_code == 200:
+
+        archive_csv_content_encoded = archive_csv_response.json()["content"]
+        archive_csv_content = b64decode(archive_csv_content_encoded).decode("utf-8")
+        archive_csv_sha = archive_csv_response.json()["sha"]
+
+        new_row = f'"{current_date}","{quote}","{author}"\n'
+        updated_csv_content = archive_csv_content + new_row
+    elif archive_csv_response.status_code == 404:
+
+        updated_csv_content = "Date,Quote,Author\n"
+        new_row = f'"{current_date}","{quote}","{author}"\n'
+        updated_csv_content += new_row
+        archive_csv_sha = None
+    else:
+        archive_csv_response.raise_for_status()
+
+    archive_csv_blob_sha = create_blob(updated_csv_content)
 
     tree_url = f"{base_url}/git/trees"
     tree_data = {
@@ -98,6 +119,12 @@ def refresh(myTimer: func.TimerRequest) -> None:
                 "mode": "100644",
                 "type": "blob",
                 "sha": archive_blob_sha,
+            },
+            {
+                "path": "archive.csv",
+                "mode": "100644",
+                "type": "blob",
+                "sha": archive_csv_blob_sha,
             },
         ],
     }
