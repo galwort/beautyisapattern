@@ -1,80 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Love & Life Animation</title>
-    <!-- p5.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <!-- Include a favicon -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-    </style>
-    <script>
-        let hearts = [];
-
-        function setup() {
-            createCanvas(windowWidth, windowHeight);
-            frameRate(30);
-            // Initialize some hearts on the canvas
-            for (let i = 0; i < 20; i++) {
-                hearts.push(new Heart(random(width), random(height)));
-            }
-        }
-
-        function draw() {
-            background('#FFD700'); // Golden backdrop
-            hearts.forEach(heart => {
-                heart.move();
-                heart.display();
-            });
-
-            // Add new hearts randomly
-            if (random(1) < 0.05) {
-                hearts.push(new Heart(random(width), 0));
-            }
-
-            // Remove hearts that are out of bounds
-            hearts = hearts.filter(heart => heart.y < height);
-        }
-
-        class Heart {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.size = random(15, 40);
-                this.speed = random(2, 5);
-                this.color = color(random(255), 100, random(255));
-            }
-
-            move() {
-                this.y += this.speed;
-            }
-
-            display() {
-                fill(this.color);
-                noStroke();
-                push();
-                translate(this.x, this.y);
-                beginShape();
-                vertex(0, -this.size / 4);
-                bezierVertex(-this.size / 2, -3 * this.size / 4, -this.size, this.size / 4, 0, this.size / 1.5);
-                bezierVertex(this.size, this.size / 4, this.size / 2, -3 * this.size / 4, 0, -this.size / 4);
-                endShape(CLOSE);
-                pop();
-            }
-        }
-
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p5.js Quote Inspiration</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #282c34;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
 </head>
 <body>
-    <!-- The canvas will be drawn here by p5.js -->
+  <script>
+    let particles = [];
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      noCursor();
+    }
+
+    function draw() {
+      background(40, 44, 52, 25); // Dark background with transparency
+      let newParticle = new Particle(mouseX, mouseY);
+      particles.push(newParticle);
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update();
+        particles[i].show();
+        if (particles[i].finished()) {
+          particles.splice(i, 1);
+        }
+      }
+    }
+
+    class Particle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = random(-1, 1);
+        this.vy = random(-5, -1);
+        this.alpha = 255;
+        this.size = random(5, 15);
+        this.col = color(random(80, 255), random(80, 255), random(80, 255));
+      }
+
+      finished() {
+        return this.alpha < 0;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= 5;
+      }
+
+      show() {
+        noStroke();
+        fill(this.col.levels[0], this.col.levels[1], this.col.levels[2], this.alpha);
+        ellipse(this.x, this.y, this.size);
+      }
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+  </script>
 </body>
 </html>
