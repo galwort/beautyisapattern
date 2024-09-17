@@ -3,84 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P5 Animation</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <title>Animated Friends</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f7f5f0;
-        }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f5f5f5;
+      }
+      canvas {
+        border: 2px solid #333;
+      }
     </style>
 </head>
 <body>
+    <script>
+        let circles = [];
+        let maxCircles = 50;
 
-<script>
-    let friends = [];
-    let numFriends = 10;
-
-    class Friend {
-        constructor(x, y, col) {
-            this.pos = createVector(x, y);
-            this.vel = createVector(random(-1, 1), random(-1, 1));
-            this.col = col;
-            this.size = random(25, 40);
-        }
-
-        update() {
-            this.pos.add(this.vel);
-
-            // Bounce back when hitting the edges
-            if (this.pos.x < 0 || this.pos.x > width) {
-                this.vel.x *= -1;
-            }
-            if (this.pos.y < 0 || this.pos.y > height) {
-                this.vel.y *= -1;
-            }
-        }
-
-        display() {
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
             noStroke();
-            fill(this.col);
-            ellipse(this.pos.x, this.pos.y, this.size);
-        }
-    }
-
-    function setup() {
-        createCanvas(windowWidth, windowHeight);
-        for (let i = 0; i < numFriends; i++) {
-            friends.push(new Friend(random(width), random(height), color(random(255), random(255), random(255))));
-        }
-    }
-
-    function draw() {
-        background(247, 245, 240, 25); // subtle trail effect
-
-        for (let friend of friends) {
-            friend.update();
-            friend.display();
+            generateCircles();
         }
 
-        // Influence each other to move closer
-        if (frameCount % 30 == 0) {  // every 30 frames
-            let target = createVector(width / 2, height / 2);
-            for (let friend of friends) {
-                let influence = p5.Vector.random2D().mult(random(0.5));
-                friend.vel.add(influence);
-                friend.vel.limit(3); // avoid too fast movements
+        function draw() {
+            background(245);
+            fill(30, 144, 255, 100);
+
+            for (let i = 0; i < circles.length; i++) {
+                let c = circles[i];
+
+                c.x += c.vx;
+                c.y += c.vy;
+
+                if (c.x > width || c.x < 0) {
+                    c.vx *= -1;
+                }
+
+                if (c.y > height || c.y < 0) {
+                    c.vy *= -1;
+                }
+
+                ellipse(c.x, c.y, c.size);
+                connectToOthers(c, i);
+
+                // Slow down the movement slightly
+                c.vx *= 0.99;
+                c.vy *= 0.99;
             }
         }
-    }
 
-    function windowResized() {
-        resizeCanvas(windowWidth, windowHeight);
-    }
+        function generateCircles() {
+            for (let i = 0; i < maxCircles; i++) {
+                circles.push({
+                    x: random(width),
+                    y: random(height),
+                    vx: random(-2, 2),
+                    vy: random(-2, 2),
+                    size: random(15, 40)
+                });
+            }
+        }
 
-</script>
+        function connectToOthers(circle, index) {
+            stroke(0);
+            strokeWeight(1);
+            for (let j = index + 1; j < circles.length; j++) {
+                let otherCircle = circles[j];
+                let distance = dist(circle.x, circle.y, otherCircle.x, otherCircle.y);
 
+                if (distance < 150) {
+                    line(circle.x, circle.y, otherCircle.x, otherCircle.y);
+                }
+            }
+            noStroke();
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+
+    </script>
 </body>
 </html>
