@@ -95,8 +95,18 @@ def refresh(myTimer: func.TimerRequest) -> None:
         archive_csv_content = b64decode(archive_csv_content_encoded).decode("utf-8")
         archive_csv_sha = archive_csv_response.json()["sha"]
 
-        new_row = f'"{current_date}","{quote}","{author}"\n'
-        updated_csv_content = archive_csv_content + new_row
+        lines = archive_csv_content.splitlines()
+        header = lines[0]
+        data_lines = lines[1:]
+
+        data_lines = [
+            line for line in data_lines if not line.startswith(f'"{current_date}"')
+        ]
+
+        new_row = f'"{current_date}","{quote}","{author}"'
+        updated_csv_content = (
+            header + "\n" + "\n".join(data_lines) + "\n" + new_row + "\n"
+        )
     elif archive_csv_response.status_code == 404:
 
         updated_csv_content = "Date,Quote,Author\n"
