@@ -1,64 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simplicity in Motion</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f4f6f7;
-        }
-        #archive-link {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            text-decoration: none;
-            color: #555;
-            font-size: 14px;
-        }
-        #archive-link:hover {
-            color: #000;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language of the Heart</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    .archive-link {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 5px 10px;
+      border-radius: 3px;
+      text-decoration: none;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script>
+    let t = 0;
 
-<!-- p5.js sketch -->
-<script>
-
-let angle = 0;
-let numCircles = 6;
-
-function setup() {
-    createCanvas(windowWidth, windowHeight);
-    noStroke();
-    fill(255, 240);
-}
-
-function draw() {
-    background(244, 246, 247);
-    translate(width / 2, height / 2);
-    
-    for (let i = 0; i < numCircles; i++) {
-        let offset = PI / numCircles * i;
-        let x = cos(angle + offset) * 150;
-        let y = sin(angle + offset) * 150;
-        ellipse(x, y, 60, 60);
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
     }
-    
-    angle += 0.01;
-}
 
-</script>
+    function draw() {
+      background(240);
 
-<a id="archive-link" href="archive.html">Visit Archive</a>
+      // Draw the dynamically connected hearts
+      for (let x = 0; x < width; x += 100) {
+        for (let y = 0; y < height; y += 100) {
+          push();
+          translate(x + 50, y + 50);
+          drawAnimatedHeart(t + (x + y) * 0.01);
+          pop();
+        }
+      }
 
+      t += 0.02;
+    }
+
+    function drawAnimatedHeart(time) {
+      const heartSize = 20 + 10 * sin(time);
+
+      // Heart shape
+      beginShape();
+      for (let a = 0; a < TWO_PI; a += 0.1) {
+        let r = heartSize;
+        let x = r * 16 * pow(sin(a), 3);
+        let y = -r * (13 * cos(a) - 5 * cos(2 * a) - 2 * cos(3 * a) - cos(4 * a));
+        vertex(x, y);
+      }
+      endShape(CLOSE);
+
+      // Connect the hearts
+      for (let a = 0; a <= PI; a += PI / 6) {
+        let connectX = heartSize * 16 * pow(sin(a), 3);
+        let connectY = -heartSize * (13 * cos(a) - 5 * cos(2 * a) - 2 * cos(3 * a) - cos(4 * a));
+        stroke(180, 50);
+        line(0, 0, connectX / 4, connectY / 4);
+      }
+
+      noFill();
+      stroke(150, 50, 100);
+      strokeWeight(2);
+    }
+  </script>
+
+  <a href="archive.html" class="archive-link">Go to the Archive</a>
 </body>
 </html>
