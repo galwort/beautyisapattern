@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <title>Animated Friends</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f5f5f5;
+      }
+      canvas {
+        border: 2px solid #333;
+      }
+    </style>
+</head>
+<body>
+    <script>
+        let circles = [];
+        let maxCircles = 50;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            noStroke();
+            generateCircles();
+        }
+
+        function draw() {
+            background(245);
+            fill(30, 144, 255, 100);
+
+            for (let i = 0; i < circles.length; i++) {
+                let c = circles[i];
+
+                c.x += c.vx;
+                c.y += c.vy;
+
+                if (c.x > width || c.x < 0) {
+                    c.vx *= -1;
+                }
+
+                if (c.y > height || c.y < 0) {
+                    c.vy *= -1;
+                }
+
+                ellipse(c.x, c.y, c.size);
+                connectToOthers(c, i);
+
+                // Slow down the movement slightly
+                c.vx *= 0.99;
+                c.vy *= 0.99;
+            }
+        }
+
+        function generateCircles() {
+            for (let i = 0; i < maxCircles; i++) {
+                circles.push({
+                    x: random(width),
+                    y: random(height),
+                    vx: random(-2, 2),
+                    vy: random(-2, 2),
+                    size: random(15, 40)
+                });
+            }
+        }
+
+        function connectToOthers(circle, index) {
+            stroke(0);
+            strokeWeight(1);
+            for (let j = index + 1; j < circles.length; j++) {
+                let otherCircle = circles[j];
+                let distance = dist(circle.x, circle.y, otherCircle.x, otherCircle.y);
+
+                if (distance < 150) {
+                    line(circle.x, circle.y, otherCircle.x, otherCircle.y);
+                }
+            }
+            noStroke();
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+
+    </script>
+</body>
+</html>
