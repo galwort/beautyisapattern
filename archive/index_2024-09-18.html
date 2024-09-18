@@ -3,82 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <title>Sewer Symphony</title>
+    <title>Simplicity in Motion</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        body, html {
+        body {
             margin: 0;
-            padding: 0;
             overflow: hidden;
-            background-color: #1e1e1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f6f7;
+        }
+        #archive-link {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+        }
+        #archive-link:hover {
+            color: #000;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script>
-        let particles = [];
-
-        function setup() {
-            createCanvas(windowWidth, windowHeight);
-            noStroke();
-        }
-
-        function draw() {
-            background(30);
-
-            if (mouseIsPressed) {
-                let newParticles = floor(random(3, 8));
-                for (let i = 0; i < newParticles; i++) {
-                    particles.push(new Particle(mouseX, mouseY));
-                }
-            }
-
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update();
-                particles[i].display();
-                if (particles[i].isOffScreen()) {
-                    particles.splice(i, 1);
-                }
-            }
-
-            // Draw sewer pipe
-            fill(68, 68, 71);
-            rect(0, height-60, width, 60);
-            fill(51, 51, 56);
-            rect(0, height-30, width, 30);
-        }
-
-        class Particle {
-            constructor(x, y) {
-                this.position = createVector(x, y);
-                this.velocity = createVector(random(-1, 1), random(-1, -1.5));
-                this.acceleration = createVector(0, 0.05);
-                this.size = random(8, 14);
-                this.lifeSpan = 255;
-                this.color = color(random(100, 255), random(100, 255), random(100, 255));
-            }
-
-            update() {
-                this.velocity.add(this.acceleration);
-                this.position.add(this.velocity);
-                this.lifeSpan -= 2;
-            }
-
-            display() {
-                fill(red(this.color), green(this.color), blue(this.color), this.lifeSpan);
-                ellipse(this.position.x, this.position.y, this.size);
-            }
-
-            isOffScreen() {
-                return this.position.y > height;
-            }
-        }
-
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
-    </script>
 </head>
 <body>
+
+<!-- p5.js sketch -->
+<script>
+
+let angle = 0;
+let numCircles = 6;
+
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    noStroke();
+    fill(255, 240);
+}
+
+function draw() {
+    background(244, 246, 247);
+    translate(width / 2, height / 2);
+    
+    for (let i = 0; i < numCircles; i++) {
+        let offset = PI / numCircles * i;
+        let x = cos(angle + offset) * 150;
+        let y = sin(angle + offset) * 150;
+        ellipse(x, y, 60, 60);
+    }
+    
+    angle += 0.01;
+}
+
+</script>
+
+<a id="archive-link" href="archive.html">Visit Archive</a>
 
 </body>
 </html>
