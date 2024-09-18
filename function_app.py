@@ -41,8 +41,10 @@ def refresh(myTimer: func.TimerRequest) -> None:
         f'"{quote}"\n'
         "The output should be animated. "
         "Do not add text in the output. "
-        "The file should be named 'index.html'."
-        "The favicon file should be named 'favicon.ico'."
+        "The file should be named 'index.html'. "
+        "The favicon file should be named 'favicon.ico'. "
+        "The title of the page should not mention p5, "
+        "but should more reference the theme of the quote. "
     )
 
     completion = client.beta.chat.completions.parse(
