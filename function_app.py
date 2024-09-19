@@ -106,7 +106,7 @@ def refresh(myTimer: func.TimerRequest) -> None:
 
         new_row = f'"{current_date}","{quote}","{author}"'
         updated_csv_content = (
-            new_row + "\n" + header + "\n" + "\n".join(data_lines) + "\n"
+            header + "\n" + new_row + "\n" + "\n".join(data_lines) + "\n"
         )
     elif archive_csv_response.status_code == 404:
 
