@@ -43,10 +43,11 @@ def refresh(myTimer: func.TimerRequest) -> None:
         "Do not add text in the output. "
         "Avoid making the output interactive. "
         "The file should be named 'index.html'. "
-        "The favicon file should be named 'favicon.ico'. "
+        "The favicon is available at https://www.beautyisapattern.com/favicon.ico. "
         "The title of the page should not mention p5, "
         "but should more reference the theme of the quote. "
-        "There should be a link to the archive page somewhere on the page. "
+        "Somewhere on the page, there should be a link to "
+        "the archive at https://www.beautyisapattern.com/archive"
     )
 
     completion = client.beta.chat.completions.parse(
