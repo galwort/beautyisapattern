@@ -57,9 +57,7 @@ def refresh(myTimer: func.TimerRequest) -> None:
         temperature=1,
     )
 
-    code = completion.choices[0].message.parsed.code
-
-    new_content = code
+    new_content = completion.choices[0].message.parsed.code
 
     ref_url = f"{base_url}/git/ref/heads/main"
     ref_response = get(ref_url, headers=headers)
@@ -79,19 +77,12 @@ def refresh(myTimer: func.TimerRequest) -> None:
         return blob_response.json()["sha"]
 
     index_blob_sha = create_blob(new_content)
-
-    index_url = f"{base_url}/contents/index.html"
-    index_response = get(index_url, headers=headers)
-    index_response.raise_for_status()
-    current_index_content_encoded = index_response.json()["content"]
-    current_index_content = b64decode(current_index_content_encoded).decode("utf-8")
-    archive_blob_sha = create_blob(current_index_content)
+    archive_blob_sha = create_blob(new_content)
 
     archive_csv_url = f"{base_url}/contents/archive.csv"
     archive_csv_response = get(archive_csv_url, headers=headers)
 
     if archive_csv_response.status_code == 200:
-
         archive_csv_content_encoded = archive_csv_response.json()["content"]
         archive_csv_content = b64decode(archive_csv_content_encoded).decode("utf-8")
         archive_csv_sha = archive_csv_response.json()["sha"]
@@ -109,7 +100,6 @@ def refresh(myTimer: func.TimerRequest) -> None:
             header + "\n" + new_row + "\n" + "\n".join(data_lines) + "\n"
         )
     elif archive_csv_response.status_code == 404:
-
         updated_csv_content = "Date,Quote,Author\n"
         new_row = f'"{current_date}","{quote}","{author}"\n'
         updated_csv_content += new_row
