@@ -1,67 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Build Your Own Path</title>
-    <link rel="icon" type="image/x-icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>The Art of Time</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        body, html {
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
+            background-color: #282c34;
             overflow: hidden;
         }
-        footer {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            padding: 10px;
-        }
+        
         a {
+            position: absolute;
+            bottom: 20px;
+            color: #61dafb;
             text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            font-family: Arial, sans-serif;
         }
     </style>
 </head>
+
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.js"></script>
+    <a href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
     <script>
-        function setup() { 
+        let past = [];
+        let future = [];
+        let timePassed = 0;
+
+        function setup() {
             createCanvas(windowWidth, windowHeight);
-            noStroke();
+            noFill();
+            stroke(97, 218, 251, 150);
         }
 
         function draw() {
-            background(240);
-            let doorWidth = 100;
-            let doorHeight = 200;
-            let knobSize = 15;
+            background(40, 44, 52, 25);
+            let centerX = width / 2;
+            let centerY = height / 2;
+            let angleIncrement = TWO_PI / 25;
 
-            // Drawing the animated doors
-            for(let i = 0; i < width; i += 150) {
-                for(let j = 0; j < height; j += 250) {
-                    let offsetX = noise(frameCount * 0.01 + i * 0.02 + j * 0.01) * 50;
-                    let offsetY = noise(frameCount * 0.01 + j * 0.02 + i * 0.01) * 20;
+            // Draw the present
+            let timeX = centerX + cos(timePassed / 50) * 100;
+            let timeY = centerY + sin(timePassed / 50) * 100;
+            ellipse(timeX, timeY, 20, 20);
 
-                    fill(160, 82, 45); // Door color
-                    rect(i + offsetX, j + offsetY, doorWidth, doorHeight);
-                    fill(255, 223, 0); // Knob color
-                    ellipse(i + offsetX + doorWidth - 20, j + offsetY + doorHeight / 2, knobSize);
-                }
+            // Draw the past
+            for (let i = 0; i < past.length; i++) {
+                let pastX = past[i].x + cos(past[i].angle) * 50;
+                let pastY = past[i].y + sin(past[i].angle) * 50;
+                ellipse(pastX, pastY, 10, 10);
+                past[i].angle += angleIncrement / 2;
+            }
+
+            // Draw the future
+            for (let i = 0; i < future.length; i++) {
+                let futureX = future[i].x + cos(future[i].angle) * 150;
+                let futureY = future[i].y + sin(future[i].angle) * 150;
+                ellipse(futureX, futureY, 5, 5);
+                future[i].angle += angleIncrement * 3;
+            }
+
+            // Advance time
+            timePassed++;
+
+            let newPast = { x: timeX, y: timeY, angle: random(TWO_PI) };
+            past.push(newPast);
+
+            if (past.length > 50) {
+                past.shift();
+            }
+
+            let newFuture = { x: timeX, y: timeY, angle: random(TWO_PI) };
+            future.push(newFuture);
+
+            if (future.length > 25) {
+                future.shift();
             }
         }
-
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
     </script>
-
-    <footer>
-        <a href="https://www.beautyisapattern.com/archive" target="_blank">View Archive</a>
-    </footer>
 </body>
+
 </html>

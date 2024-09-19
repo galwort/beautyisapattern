@@ -1,59 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reflections of Virtue</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>The Art of Time</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
         body {
-            margin: 0;
-            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f5f7fa;
+            height: 100vh;
+            margin: 0;
+            background-color: #282c34;
+            overflow: hidden;
         }
+        
         a {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
+            position: absolute;
+            bottom: 20px;
+            color: #61dafb;
             text-decoration: none;
-            color: #333;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+
+<body>
+    <a href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
     <script>
+        let past = [];
+        let future = [];
+        let timePassed = 0;
+
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            noStroke();
+            noFill();
+            stroke(97, 218, 251, 150);
         }
 
         function draw() {
-            background(245, 247, 250);
+            background(40, 44, 52, 25);
+            let centerX = width / 2;
+            let centerY = height / 2;
+            let angleIncrement = TWO_PI / 25;
 
-            let numShapes = 100;
+            // Draw the present
+            let timeX = centerX + cos(timePassed / 50) * 100;
+            let timeY = centerY + sin(timePassed / 50) * 100;
+            ellipse(timeX, timeY, 20, 20);
 
-            for (let i = 0; i < numShapes; i++) {
-                let angle = map(i, 0, numShapes, 0, TWO_PI);
-                let radius = map(sin(frameCount * 0.02 + angle), -1, 1, 50, 150);
-                let x = width / 2 + radius * cos(angle * frameCount * 0.002);
-                let y = height / 2 + radius * sin(angle * frameCount * 0.002);
-                let size = map(sin(angle + frameCount * 0.01), -1, 1, 10, 20);
+            // Draw the past
+            for (let i = 0; i < past.length; i++) {
+                let pastX = past[i].x + cos(past[i].angle) * 50;
+                let pastY = past[i].y + sin(past[i].angle) * 50;
+                ellipse(pastX, pastY, 10, 10);
+                past[i].angle += angleIncrement / 2;
+            }
 
-                fill(150 + 100 * sin(i + frameCount * 0.05), 120, 200, 150);
-                ellipse(x, y, size, size);
+            // Draw the future
+            for (let i = 0; i < future.length; i++) {
+                let futureX = future[i].x + cos(future[i].angle) * 150;
+                let futureY = future[i].y + sin(future[i].angle) * 150;
+                ellipse(futureX, futureY, 5, 5);
+                future[i].angle += angleIncrement * 3;
+            }
+
+            // Advance time
+            timePassed++;
+
+            let newPast = { x: timeX, y: timeY, angle: random(TWO_PI) };
+            past.push(newPast);
+
+            if (past.length > 50) {
+                past.shift();
+            }
+
+            let newFuture = { x: timeX, y: timeY, angle: random(TWO_PI) };
+            future.push(newFuture);
+
+            if (future.length > 25) {
+                future.shift();
             }
         }
-        
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
     </script>
-</head>
-<body>
-    <a href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
 </body>
+
 </html>
