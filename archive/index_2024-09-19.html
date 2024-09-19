@@ -1,81 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Language of the Heart</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-    }
-    .archive-link {
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(255, 255, 255, 0.6);
-      padding: 5px 10px;
-      border-radius: 3px;
-      text-decoration: none;
-      color: #333;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflections of Virtue</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f7fa;
+        }
+        a {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            text-decoration: none;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            noStroke();
+        }
+
+        function draw() {
+            background(245, 247, 250);
+
+            let numShapes = 100;
+
+            for (let i = 0; i < numShapes; i++) {
+                let angle = map(i, 0, numShapes, 0, TWO_PI);
+                let radius = map(sin(frameCount * 0.02 + angle), -1, 1, 50, 150);
+                let x = width / 2 + radius * cos(angle * frameCount * 0.002);
+                let y = height / 2 + radius * sin(angle * frameCount * 0.002);
+                let size = map(sin(angle + frameCount * 0.01), -1, 1, 10, 20);
+
+                fill(150 + 100 * sin(i + frameCount * 0.05), 120, 200, 150);
+                ellipse(x, y, size, size);
+            }
+        }
+        
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
 </head>
 <body>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <script>
-    let t = 0;
-
-    function setup() {
-      createCanvas(windowWidth, windowHeight);
-    }
-
-    function draw() {
-      background(240);
-
-      // Draw the dynamically connected hearts
-      for (let x = 0; x < width; x += 100) {
-        for (let y = 0; y < height; y += 100) {
-          push();
-          translate(x + 50, y + 50);
-          drawAnimatedHeart(t + (x + y) * 0.01);
-          pop();
-        }
-      }
-
-      t += 0.02;
-    }
-
-    function drawAnimatedHeart(time) {
-      const heartSize = 20 + 10 * sin(time);
-
-      // Heart shape
-      beginShape();
-      for (let a = 0; a < TWO_PI; a += 0.1) {
-        let r = heartSize;
-        let x = r * 16 * pow(sin(a), 3);
-        let y = -r * (13 * cos(a) - 5 * cos(2 * a) - 2 * cos(3 * a) - cos(4 * a));
-        vertex(x, y);
-      }
-      endShape(CLOSE);
-
-      // Connect the hearts
-      for (let a = 0; a <= PI; a += PI / 6) {
-        let connectX = heartSize * 16 * pow(sin(a), 3);
-        let connectY = -heartSize * (13 * cos(a) - 5 * cos(2 * a) - 2 * cos(3 * a) - cos(4 * a));
-        stroke(180, 50);
-        line(0, 0, connectX / 4, connectY / 4);
-      }
-
-      noFill();
-      stroke(150, 50, 100);
-      strokeWeight(2);
-    }
-  </script>
-
-  <a href="archive.html" class="archive-link">Go to the Archive</a>
+    <a href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
 </body>
 </html>

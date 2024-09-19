@@ -3,57 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reflections of Virtue</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>Build Your Own Path</title>
+    <link rel="icon" type="image/x-icon" href="https://www.beautyisapattern.com/favicon.ico">
     <style>
-        body {
+        body, html {
             margin: 0;
+            padding: 0;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f5f7fa;
         }
-        a {
-            position: fixed;
+        footer {
+            position: absolute;
             bottom: 10px;
             right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        a {
             text-decoration: none;
             color: #333;
+            font-weight: bold;
             font-family: Arial, sans-serif;
-            font-size: 14px;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.js"></script>
     <script>
-        function setup() {
+        function setup() { 
             createCanvas(windowWidth, windowHeight);
             noStroke();
         }
 
         function draw() {
-            background(245, 247, 250);
+            background(240);
+            let doorWidth = 100;
+            let doorHeight = 200;
+            let knobSize = 15;
 
-            let numShapes = 100;
+            // Drawing the animated doors
+            for(let i = 0; i < width; i += 150) {
+                for(let j = 0; j < height; j += 250) {
+                    let offsetX = noise(frameCount * 0.01 + i * 0.02 + j * 0.01) * 50;
+                    let offsetY = noise(frameCount * 0.01 + j * 0.02 + i * 0.01) * 20;
 
-            for (let i = 0; i < numShapes; i++) {
-                let angle = map(i, 0, numShapes, 0, TWO_PI);
-                let radius = map(sin(frameCount * 0.02 + angle), -1, 1, 50, 150);
-                let x = width / 2 + radius * cos(angle * frameCount * 0.002);
-                let y = height / 2 + radius * sin(angle * frameCount * 0.002);
-                let size = map(sin(angle + frameCount * 0.01), -1, 1, 10, 20);
-
-                fill(150 + 100 * sin(i + frameCount * 0.05), 120, 200, 150);
-                ellipse(x, y, size, size);
+                    fill(160, 82, 45); // Door color
+                    rect(i + offsetX, j + offsetY, doorWidth, doorHeight);
+                    fill(255, 223, 0); // Knob color
+                    ellipse(i + offsetX + doorWidth - 20, j + offsetY + doorHeight / 2, knobSize);
+                }
             }
         }
-        
+
         function windowResized() {
             resizeCanvas(windowWidth, windowHeight);
         }
     </script>
-</head>
-<body>
-    <a href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+
+    <footer>
+        <a href="https://www.beautyisapattern.com/archive" target="_blank">View Archive</a>
+    </footer>
 </body>
 </html>
