@@ -50,14 +50,27 @@ def refresh(myTimer: func.TimerRequest) -> None:
         "the archive at https://www.beautyisapattern.com/archive"
     )
 
-    completion = client.beta.chat.completions.parse(
+    conversation = {"role": "user", "content": user_input}
+
+    completion1 = client.beta.chat.completions.parse(
         model="gpt-4o-2024-08-06",
-        messages=[{"role": "user", "content": user_input}],
+        messages=conversation,
         response_format=indexHTML,
         temperature=1,
     )
 
-    new_content = completion.choices[0].message.parsed.code
+    code1 = completion1.choices[0].message.parsed.code
+    conversation.append({"role": "assistant", "content": code1})
+    conversation.append({"role": "user", "content": "You can do better."})
+
+    completion2 = client.beta.chat.completions.parse(
+        model="gpt-4o-2024-08-06",
+        messages=conversation,
+        response_format=indexHTML,
+        temperature=1,
+    )
+
+    code2 = completion2.choices[0].message.parsed.code
 
     ref_url = f"{base_url}/git/ref/heads/main"
     ref_response = get(ref_url, headers=headers)
@@ -76,8 +89,8 @@ def refresh(myTimer: func.TimerRequest) -> None:
         blob_response.raise_for_status()
         return blob_response.json()["sha"]
 
-    index_blob_sha = create_blob(new_content)
-    archive_blob_sha = create_blob(new_content)
+    index_blob_sha = create_blob(code2)
+    archive_blob_sha = create_blob(code2)
 
     archive_csv_url = f"{base_url}/contents/archive.csv"
     archive_csv_response = get(archive_csv_url, headers=headers)
