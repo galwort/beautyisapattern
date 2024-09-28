@@ -50,7 +50,7 @@ def refresh(myTimer: func.TimerRequest) -> None:
         "the archive at https://www.beautyisapattern.com/archive"
     )
 
-    conversation = {"role": "user", "content": user_input}
+    conversation = [{"role": "user", "content": user_input}]
 
     completion1 = client.beta.chat.completions.parse(
         model="gpt-4o-2024-08-06",
