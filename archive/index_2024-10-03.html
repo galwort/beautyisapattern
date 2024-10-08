@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embark on the Journey</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            background-color: #0a1a2d;
+            overflow: hidden;
+            color: #f1f1f1;
+            font-family: "Arial", sans-serif;
+        }
+        footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+        }
+        footer a {
+            color: #9ad9ea;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let steps = [];
+        let len = 100;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < width; i += len) {
+                steps.push(new Step(i, height));
+            }
+            frameRate(30);
+        }
+
+        function draw() {
+            background(10, 26, 45, 200);
+            for (let step of steps) {
+                step.display();
+                step.update();
+            }
+        }
+
+        class Step {
+            constructor(x, h) {
+                this.x = x;
+                this.y = h;
+                this.stepSize = random(75, 125);
+                this.color = color(random(100, 255), random(100, 255), 255, 200);
+            }
+
+            display() {
+                noStroke();
+                fill(this.color);
+                beginShape();
+                vertex(this.x, this.y);
+                vertex(this.x, this.y - this.stepSize);
+                vertex(this.x + len, this.y - this.stepSize - random(-30, 30));
+                vertex(this.x + len, this.y);
+                endShape(CLOSE);
+            }
+
+            update() {
+                this.x -= 2;
+                if (this.x < -len) {
+                    this.x = width;
+                    this.y = height - this.stepSize - random(0, 30);
+                    this.color = color(random(100, 255), random(100, 255), 255, 200);
+                }
+            }
+        }
+    </script>
+    <footer>
+        Explore journeys in the <a href="https://www.beautyisapattern.com/archive">archive</a>.
+    </footer>
+</body>
+</html>

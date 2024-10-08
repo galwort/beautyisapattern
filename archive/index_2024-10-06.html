@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Hidden Symphony of Chaos</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #111;
+            overflow: hidden;
+        }
+        a {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #fafafa;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        a:hover {
+            color: #ffcc33;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let particles = [];
+        let maxParticles = 100;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < maxParticles; i++) {
+                particles.push(new Particle(random(width), random(height)));
+            }
+        }
+
+        function draw() {
+            background(17, 17, 34, 100);
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.update();
+                p.display();
+            }
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.vel = p5.Vector.random2D();
+                this.acc = createVector();
+                this.maxSpeed = 2;
+                this.r = random(4, 12);
+                this.color = color(random(255), random(255), random(255));
+            }
+
+            update() {
+                this.edges();
+                this.pos.add(this.vel);
+                this.vel.add(this.acc);
+                this.vel.limit(this.maxSpeed);
+                this.acc.mult(0);
+                this.connect(particles);
+            }
+
+            applyForce(force) {
+                this.acc.add(force);
+            }
+
+            display() {
+                noStroke();
+                fill(this.color);
+                ellipse(this.pos.x, this.pos.y, this.r);
+            }
+
+            connect(particles) {
+                for (let other of particles) {
+                    let d = dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
+                    if (d < 120) {
+                        stroke(255, 200);
+                        line(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
+                    }
+                }
+            }
+
+            edges() {
+                if (this.pos.x > width) this.pos.x = 0;
+                if (this.pos.x < 0) this.pos.x = width;
+                if (this.pos.y > height) this.pos.y = 0;
+                if (this.pos.y < 0) this.pos.y = height;
+            }
+        }
+    </script>
+    <a href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+</body>
+</html>

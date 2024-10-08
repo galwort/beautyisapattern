@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seeds of Creation</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e6eeff;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        a {
+            position: absolute;
+            bottom: 10px;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9em;
+        }
+        canvas { 
+            display: block; 
+        }
+    </style>
+</head>
+<body>
+    <a href="https://www.beautyisapattern.com/archive">Visit the Archive</a>
+    <script>
+        let angle = 0;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            noFill();
+        }
+
+        function draw() {
+            background(230, 240, 255, 50);
+
+            translate(width / 2, height / 2);
+            strokeWeight(1.5);
+            stroke(100, 150, 200, 150);
+
+            for (let i = 0; i < 200; i++) {
+                let interAngle = angle + map(i, 0, 200, 0, TWO_PI);
+                let x = sin(interAngle * 3) * i * 1.5;
+                let y = cos(interAngle * 2) * i * 1.5;
+                ellipse(x, y, i * 0.15, i * 0.15);
+            }
+
+            angle += 0.01;
+
+            if (angle > TWO_PI) {
+                angle = 0;
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</body>
+</html>

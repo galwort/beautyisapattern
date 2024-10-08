@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Art of Balance</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f8f1e5;
+        }
+        .archive-link {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #555;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let ingredients = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 20; i++) {
+                let angle = map(i, 0, 20, 0, TWO_PI);
+                let radius = height * 0.35;
+                let x = width / 2 + radius * cos(angle);
+                let y = height / 2 + radius * sin(angle);
+                ingredients.push(new Ingredient(x, y, angle));
+            }
+        }
+
+        function draw() {
+            background(248, 241, 229);
+            translate(width/2, height/2);
+            noStroke();
+
+            ingredients.forEach(ingredient => {
+                ingredient.update();
+                ingredient.display();
+            });
+        }
+
+        class Ingredient {
+            constructor(x, y, angle) {
+                this.x = x;
+                this.y = y;
+                this.angle = angle;
+                this.radius = 0;
+                this.size = random(20, 40);
+                this.speed = random(0.01, 0.03);
+                this.color = color(random(200, 255), random(150, 255), random(150, 255), 200);
+            }
+
+            update() {
+                this.radius = map(sin(millis() * this.speed), -1, 1, 100, 150);
+                this.x = this.radius * cos(this.angle);
+                this.y = this.radius * sin(this.angle);
+            }
+
+            display() {
+                fill(this.color);
+                ellipse(this.x, this.y, this.size);
+            }
+        }
+    </script>
+</head>
+<body>
+    <a href="https://www.beautyisapattern.com/archive" class="archive-link" target="_blank">Visit the Archive</a>
+</body>
+</html>
