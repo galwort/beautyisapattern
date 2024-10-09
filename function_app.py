@@ -42,7 +42,6 @@ def refresh(myTimer: func.TimerRequest) -> None:
         "The output should be animated. "
         "Do not add text in the output. "
         "Avoid making the output interactive. "
-        "The file should be named 'index.html'. "
         "The favicon is available at https://www.beautyisapattern.com/favicon.ico. "
         "The title of the page should not mention p5, "
         "but should more reference the theme of the quote. "
