@@ -1,14 +1,26 @@
 import azure.functions as func
-from base64 import b64decode
+
+from PIL import Image
+from base64 import b64decode, b64encode
+from cairosvg import svg2png
 from datetime import datetime
-from requests import get, post, patch
-from pydantic import BaseModel
+from io import BytesIO
 from openai import OpenAI
 from os import getenv
+from pydantic import BaseModel
+from requests import get, post, patch
 
 
 class indexHTML(BaseModel):
     code: str
+
+
+class SvgCode(BaseModel):
+    svg: str
+
+
+class IconHTML(BaseModel):
+    icon: str
 
 
 app = func.FunctionApp()
@@ -71,6 +83,38 @@ def refresh(myTimer: func.TimerRequest) -> None:
 
     code2 = completion2.choices[0].message.parsed.code
 
+    quote_input = (
+        "Please respond with one emoji that would best represent the following quote: "
+        f'"{quote}"'
+    )
+
+    completion_icon = client.beta.chat.completions.parse(
+        model="gpt-4o-2024-08-06",
+        messages=[{"role": "user", "content": quote_input}],
+        response_format=IconHTML,
+        temperature=1,
+    )
+
+    icon = completion_icon.choices[0].message.parsed.icon
+
+    svg_input = f"Please write SVG code for a {icon} icon."
+
+    completion_svg = client.beta.chat.completions.parse(
+        model="gpt-4o-2024-08-06",
+        messages=[{"role": "user", "content": svg_input}],
+        response_format=SvgCode,
+        temperature=1,
+    )
+
+    svg = completion_svg.choices[0].message.parsed.svg
+
+    png_data = svg2png(bytestring=svg.encode("utf-8"))
+
+    img = Image.open(BytesIO(png_data))
+    ico_buffer = BytesIO()
+    img.save(ico_buffer, format="ICO", sizes=[(32, 32)])
+    ico_data = ico_buffer.getvalue()
+
     ref_url = f"{base_url}/git/ref/heads/main"
     ref_response = get(ref_url, headers=headers)
     ref_response.raise_for_status()
@@ -88,8 +132,19 @@ def refresh(myTimer: func.TimerRequest) -> None:
         blob_response.raise_for_status()
         return blob_response.json()["sha"]
 
+    def create_blob_binary(content):
+        blob_url = f"{base_url}/git/blobs"
+        blob_data = {
+            "content": b64encode(content).decode("utf-8"),
+            "encoding": "base64",
+        }
+        blob_response = post(blob_url, json=blob_data, headers=headers)
+        blob_response.raise_for_status()
+        return blob_response.json()["sha"]
+
     index_blob_sha = create_blob(code2)
     archive_blob_sha = create_blob(code2)
+    favicon_blob_sha = create_blob_binary(ico_data)
 
     archive_csv_url = f"{base_url}/contents/archive.csv"
     archive_csv_response = get(archive_csv_url, headers=headers)
@@ -142,6 +197,12 @@ def refresh(myTimer: func.TimerRequest) -> None:
                 "mode": "100644",
                 "type": "blob",
                 "sha": archive_csv_blob_sha,
+            },
+            {
+                "path": "favicon.ico",
+                "mode": "100644",
+                "type": "blob",
+                "sha": favicon_blob_sha,
             },
         ],
     }
