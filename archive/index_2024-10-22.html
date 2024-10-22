@@ -3,59 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Essence of Simplicity</title>
-    <link rel="icon" type="image/x-icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>Each Day An Opportunity</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
     <style>
         body, html {
             margin: 0;
-            padding: 0;
             overflow: hidden;
-            background-color: #f9f9f9;
+            background-color: #181818;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
-        #archive-link {
-            position: absolute;
+        .archive-link {
+            position: fixed;
             bottom: 15px;
             right: 15px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 5px 10px;
-            border-radius: 15px;
             text-decoration: none;
-            color: #333;
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            font-size: 0.9em;
+            color: #e0e0e0;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 12px;
+            transition: background 0.3s;
+        }
+        .archive-link:hover {
+            background: rgba(0, 0, 0, 0.8);
         }
     </style>
 </head>
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script>
-        // P5.js sketch to visualize the beauty in simplicity
-        let t = 0;
-        let size = 100;
 
-        function setup() {
-            createCanvas(windowWidth, windowHeight);
-            noFill();
-            strokeWeight(2);
-        }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+<script>
+    let angle = 0;
+    let colors = [];
 
-        function draw() {
-            background(249, 249, 249);
-            stroke(50, 100, height/3, 100);
-            translate(width / 2, height / 2);
-            for (let i = 0; i < 360; i += 30) {
-                let x = cos(TWO_PI * i / 360) * (size + sin(t + i) * 20);
-                let y = sin(TWO_PI * i / 360) * (size + sin(t + i) * 20);
-                ellipse(x, y, size, size);
-                line(0, 0, x, y);
+    function setup() {
+        createCanvas(windowWidth, windowHeight);
+        noFill();
+        strokeWeight(1.5);
+
+        // Define color gradients to depict the learning journey
+        colors = [
+            color(217, 51, 51, 20),
+            color(244, 132, 59, 90),
+            color(252, 232, 131, 50),
+            color(140, 179, 161, 75),
+            color(67, 97, 238, 100)
+        ];
+    }
+
+    function draw() {
+        background(24, 24, 24, 25);
+
+        translate(width / 2, height / 2);
+        angle += radians(0.2);
+
+        for (let i = 0; i < colors.length; i++) {
+            stroke(colors[i]);
+            let radius = 100 + i * 50;
+
+            // Draw an evolving spiral of ellipses
+            beginShape();
+            for (let a = 0; a < TWO_PI; a += 0.1) {
+                let x = radius * cos(a + angle + 0.1 * i);
+                let y = radius * sin(a + angle + 0.1 * i);
+                vertex(x, y);
             }
-            t += 0.015;
+            endShape(CLOSE);
         }
+    }
 
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
-    </script>
+    function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+    }
 
-    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+</script>
+
+<a href="https://www.beautyisapattern.com/archive" class="archive-link">Explore More Patterns</a>
+
 </body>
 </html>
