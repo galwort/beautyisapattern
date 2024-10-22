@@ -3,86 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harmonizing Insight</title>
-    <link rel="shortcut icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <title>Essence of Simplicity</title>
+    <link rel="icon" type="image/x-icon" href="https://www.beautyisapattern.com/favicon.ico">
     <style>
-        body {
+        body, html {
             margin: 0;
+            padding: 0;
             overflow: hidden;
-            background-color: #1e1e1e;
+            background-color: #f9f9f9;
         }
-        .archive-link {
-            position: fixed;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
-            text-align: center;
+        #archive-link {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 15px;
             text-decoration: none;
-            color: #eaeaea;
-            background-color: #333;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background-color 0.2s;
-        }
-        .archive-link:hover {
-            background-color: #555;
+            color: #333;
+            font-family: Arial, sans-serif;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 </head>
 <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let particles = [];
-        let numOfParticles = 150;
-        
+        // P5.js sketch to visualize the beauty in simplicity
+        let t = 0;
+        let size = 100;
+
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            for(let i = 0; i < numOfParticles; i++) {
-                let colorVariant = (i % 2 === 0) ? color(0, 255, 127, 150) : color(255, 64, 64, 100);
-                particles.push(new Particle(random(width), random(height), colorVariant));
-            }
-            noStroke();
+            noFill();
+            strokeWeight(2);
         }
 
         function draw() {
-            background(30, 30, 30, 20); // Soft trail effect on black
-            particles.forEach(p => {
-                p.move();
-                p.display();
-            });
+            background(249, 249, 249);
+            stroke(50, 100, height/3, 100);
+            translate(width / 2, height / 2);
+            for (let i = 0; i < 360; i += 30) {
+                let x = cos(TWO_PI * i / 360) * (size + sin(t + i) * 20);
+                let y = sin(TWO_PI * i / 360) * (size + sin(t + i) * 20);
+                ellipse(x, y, size, size);
+                line(0, 0, x, y);
+            }
+            t += 0.015;
         }
 
-        class Particle {
-            constructor(x, y, clr) {
-                this.x = x;
-                this.y = y;
-                this.size = random(10, 20);
-                this.dir = createVector(random(-1, 1), random(-1, 1));
-                this.speed = random(0.5, 1.5);
-                this.color = clr;
-            }
-
-            move() {
-                this.x += this.dir.x * this.speed;
-                this.y += this.dir.y * this.speed;
-
-                if(this.x < 0 || this.x > width) this.dir.x *= -1;
-                if(this.y < 0 || this.y > height) this.dir.y *= -1;
-
-                // Add randomness
-                if(random(1) > 0.98) {
-                    this.dir = p5.Vector.random2D();
-                }
-            }
-
-            display() {
-                fill(this.color);
-                ellipse(this.x, this.y, this.size);
-            }
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
         }
     </script>
-    <a class="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
 </body>
 </html>
