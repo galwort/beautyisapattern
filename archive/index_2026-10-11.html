@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity and Compromise</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #archive-link {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-family: Arial, sans-serif;
+            color: #ecf0f1;
+            text-decoration: none;
+            background-color: rgba(44, 62, 80, 0.7);
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        #archive-link:hover {
+            background-color: #34495e;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let angles = [];
+        let centerX, centerY;
+        const speed = 0.02;
+        const radii = [100, 150, 200, 250, 300];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            angleMode(DEGREES);
+            centerX = width / 2;
+            centerY = height / 2;
+            for (let i = 0; i < 5; i++) {
+                angles[i] = random(0, 360);
+            }
+        }
+
+        function draw() {
+            background(44, 62, 80);
+            noFill();
+
+            for (let i = 0; i < radii.length; i++) {
+                let x1 = centerX + radii[i] * cos(angles[i]);
+                let y1 = centerY + radii[i] * sin(angles[i]);
+                let x2 = centerX + radii[i] * cos(angles[i] + 180);
+                let y2 = centerY + radii[i] * sin(angles[i] + 180);
+
+                strokeWeight(2);
+                stroke(236, 240, 241);
+                line(x1, y1, x2, y2);
+                
+                angles[i] += speed * (i + 1);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+            centerX = width / 2;
+            centerY = height / 2;
+        }
+    </script>
+</head>
+<body>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Visit the Archive</a>
+</body>
+</html>
