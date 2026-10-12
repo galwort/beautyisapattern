@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas of Thoughts</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f5f5f5;
+        }
+        #archive-link {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #333;
+            text-decoration: none;
+            padding: 5px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        #archive-link:hover {
+            background-color: rgba(51, 102, 153, 0.1);
+            border-color: #336699;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+  <script>
+    let patterns = [];
+    const maxPatterns = 30;
+    const minSize = 30;
+    const maxSize = 80;
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      for (let i = 0; i < maxPatterns; i++) {
+        patterns.push(new Pattern(random(width), random(height), random(minSize, maxSize)));
+      }
+    }
+
+    function draw() {
+      background(245, 245, 245, 15);
+      for (let pattern of patterns) {
+        pattern.update();
+        pattern.display();
+      }
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+    class Pattern {
+      constructor(x, y, size) {
+        this.initialX = x;
+        this.initialY = y;
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.angle = random(TWO_PI);
+        this.color = color(random(255), random(255), random(255), 100);
+      }
+
+      update() {
+        this.angle += 0.01;
+        this.x = this.initialX + sin(this.angle) * 50;
+        this.y = this.initialY + cos(this.angle) * 50;
+      }
+
+      display() {
+        noStroke();
+        fill(this.color);
+        push();
+        translate(this.x, this.y);
+        rotate(this.angle);
+        rect(0, 0, this.size, this.size / 2);
+        pop();
+      }
+    }
+  </script>
+
+  <a id="archive-link" href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Archive</a>
+  
+</body>
+</html>

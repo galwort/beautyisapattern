@@ -3,77 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unity and Compromise</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <title>Canvas of Thoughts</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #2c3e50;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #f5f5f5;
         }
         #archive-link {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-family: Arial, sans-serif;
-            color: #ecf0f1;
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #333;
             text-decoration: none;
-            background-color: rgba(44, 62, 80, 0.7);
-            padding: 8px 12px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            padding: 5px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: background-color 0.3s, border-color 0.3s;
         }
         #archive-link:hover {
-            background-color: #34495e;
+            background-color: rgba(51, 102, 153, 0.1);
+            border-color: #336699;
+            text-decoration: none;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script>
-        let angles = [];
-        let centerX, centerY;
-        const speed = 0.02;
-        const radii = [100, 150, 200, 250, 300];
-
-        function setup() {
-            createCanvas(windowWidth, windowHeight);
-            angleMode(DEGREES);
-            centerX = width / 2;
-            centerY = height / 2;
-            for (let i = 0; i < 5; i++) {
-                angles[i] = random(0, 360);
-            }
-        }
-
-        function draw() {
-            background(44, 62, 80);
-            noFill();
-
-            for (let i = 0; i < radii.length; i++) {
-                let x1 = centerX + radii[i] * cos(angles[i]);
-                let y1 = centerY + radii[i] * sin(angles[i]);
-                let x2 = centerX + radii[i] * cos(angles[i] + 180);
-                let y2 = centerY + radii[i] * sin(angles[i] + 180);
-
-                strokeWeight(2);
-                stroke(236, 240, 241);
-                line(x1, y1, x2, y2);
-                
-                angles[i] += speed * (i + 1);
-            }
-        }
-
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-            centerX = width / 2;
-            centerY = height / 2;
-        }
-    </script>
 </head>
 <body>
-    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Visit the Archive</a>
+
+  <script>
+    let patterns = [];
+    const maxPatterns = 30;
+    const minSize = 30;
+    const maxSize = 80;
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      for (let i = 0; i < maxPatterns; i++) {
+        patterns.push(new Pattern(random(width), random(height), random(minSize, maxSize)));
+      }
+    }
+
+    function draw() {
+      background(245, 245, 245, 15);
+      for (let pattern of patterns) {
+        pattern.update();
+        pattern.display();
+      }
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+    class Pattern {
+      constructor(x, y, size) {
+        this.initialX = x;
+        this.initialY = y;
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.angle = random(TWO_PI);
+        this.color = color(random(255), random(255), random(255), 100);
+      }
+
+      update() {
+        this.angle += 0.01;
+        this.x = this.initialX + sin(this.angle) * 50;
+        this.y = this.initialY + cos(this.angle) * 50;
+      }
+
+      display() {
+        noStroke();
+        fill(this.color);
+        push();
+        translate(this.x, this.y);
+        rotate(this.angle);
+        rect(0, 0, this.size, this.size / 2);
+        pop();
+      }
+    }
+  </script>
+
+  <a id="archive-link" href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Archive</a>
+  
 </body>
 </html>
