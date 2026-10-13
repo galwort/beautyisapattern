@@ -3,92 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas of Thoughts</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <title>Digital Sanctuary</title>
+    <link rel="shortcut icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/p5/lib/p5.min.js"></script>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #f5f5f5;
+            background: #111111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
         #archive-link {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            color: #333;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
             text-decoration: none;
-            padding: 5px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            transition: background-color 0.3s, border-color 0.3s;
+            opacity: 0.6;
+            transition: opacity 0.3s;
         }
         #archive-link:hover {
-            background-color: rgba(51, 102, 153, 0.1);
-            border-color: #336699;
-            text-decoration: none;
+            opacity: 1;
         }
     </style>
 </head>
 <body>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive" target="_blank">Visit Archive</a>
+    
+    <script>
+        let particles = [];
+        let centerX, centerY;
 
-  <script>
-    let patterns = [];
-    const maxPatterns = 30;
-    const minSize = 30;
-    const maxSize = 80;
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            centerX = width / 2;
+            centerY = height / 2;
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle(random(width), random(height)));
+            }
+        }
 
-    function setup() {
-      createCanvas(windowWidth, windowHeight);
-      for (let i = 0; i < maxPatterns; i++) {
-        patterns.push(new Pattern(random(width), random(height), random(minSize, maxSize)));
-      }
-    }
+        function draw() {
+            background(17, 17, 17, 25);
+            for (let particle of particles) {
+                particle.update();
+                particle.show();
+            }
+        }
 
-    function draw() {
-      background(245, 245, 245, 15);
-      for (let pattern of patterns) {
-        pattern.update();
-        pattern.display();
-      }
-    }
+        class Particle {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.vel = p5.Vector.random2D();
+                this.acc = createVector();
+                this.maxSpeed = 2;
+            }
 
-    function windowResized() {
-      resizeCanvas(windowWidth, windowHeight);
-    }
+            update() {
+                let target = createVector(centerX, centerY);
+                let force = p5.Vector.sub(target, this.pos);
+                force.setMag(0.05);
+                this.acc = force;
 
-    class Pattern {
-      constructor(x, y, size) {
-        this.initialX = x;
-        this.initialY = y;
-        this.x = x;
-        this.y = y;
-        this.size = size;
-        this.angle = random(TWO_PI);
-        this.color = color(random(255), random(255), random(255), 100);
-      }
+                this.vel.add(this.acc);
+                this.vel.limit(this.maxSpeed);
+                this.pos.add(this.vel);
 
-      update() {
-        this.angle += 0.01;
-        this.x = this.initialX + sin(this.angle) * 50;
-        this.y = this.initialY + cos(this.angle) * 50;
-      }
+                if (this.pos.x > width + 10 || this.pos.x < -10 ||
+                    this.pos.y > height + 10 || this.pos.y < -10) {
+                    this.pos = createVector(random(width), random(height));
+                }
+            }
 
-      display() {
-        noStroke();
-        fill(this.color);
-        push();
-        translate(this.x, this.y);
-        rotate(this.angle);
-        rect(0, 0, this.size, this.size / 2);
-        pop();
-      }
-    }
-  </script>
+            show() {
+                fill(255, 255, 255);
+                ellipse(this.pos.x, this.pos.y, 5, 5);
+            }
+        }
 
-  <a id="archive-link" href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Archive</a>
-  
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+            centerX = width / 2;
+            centerY = height / 2;
+        }
+    </script>
 </body>
 </html>
