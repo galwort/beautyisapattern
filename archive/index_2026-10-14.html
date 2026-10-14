@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance of Wisdom</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #282c34;
+        }
+        a.archive-link {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+            color: #61dafb;
+            text-decoration: none;
+        }
+        a.archive-link:hover {
+            color: #bbdfff;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let nodes = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 100; i++) {
+                nodes.push(new Node(random(width), random(height)));
+            }
+        }
+
+        function draw() {
+            background(40, 44, 52, 150);
+
+            nodes.forEach(node => {
+                node.move();
+                node.connectWith(nodes);
+                node.display();
+            });
+        }
+
+        class Node {
+            constructor(x, y) {
+                this.position = createVector(x, y);
+                this.velocity = p5.Vector.random2D().mult(random(0.5, 1.5));
+                this.size = random(2, 5);
+                this.color = color(random(100, 255), random(100, 255), random(100, 255));
+            }
+
+            move() {
+                this.position.add(this.velocity);
+                if (this.position.x < 0 || this.position.x > width) this.velocity.x *= -1;
+                if (this.position.y < 0 || this.position.y > height) this.velocity.y *= -1;
+            }
+
+            connectWith(nodes) {
+                nodes.forEach(otherNode => {
+                    let distance = dist(this.position.x, this.position.y, otherNode.position.x, otherNode.position.y);
+                    if (distance < 150) {
+                        stroke(150, 150, 150, map(distance, 0, 150, 255, 0));
+                        line(this.position.x, this.position.y, otherNode.position.x, otherNode.position.y);
+                    }
+                });
+            }
+
+            display() {
+                noStroke();
+                fill(this.color);
+                ellipse(this.position.x, this.position.y, this.size);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+    <a href="https://www.beautyisapattern.com/archive" class="archive-link">Explore the Archive</a>
+</body>
+</html>

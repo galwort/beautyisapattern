@@ -3,93 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Sanctuary</title>
-    <link rel="shortcut icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/p5/lib/p5.min.js"></script>
+    <title>Balance of Wisdom</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background: #111111;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #282c34;
         }
-        #archive-link {
+        a.archive-link {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
+            bottom: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+            color: #61dafb;
             text-decoration: none;
-            opacity: 0.6;
-            transition: opacity 0.3s;
         }
-        #archive-link:hover {
-            opacity: 1;
+        a.archive-link:hover {
+            color: #bbdfff;
         }
     </style>
 </head>
 <body>
-    <a id="archive-link" href="https://www.beautyisapattern.com/archive" target="_blank">Visit Archive</a>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let particles = [];
-        let centerX, centerY;
+        let nodes = [];
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            centerX = width / 2;
-            centerY = height / 2;
             for (let i = 0; i < 100; i++) {
-                particles.push(new Particle(random(width), random(height)));
+                nodes.push(new Node(random(width), random(height)));
             }
         }
 
         function draw() {
-            background(17, 17, 17, 25);
-            for (let particle of particles) {
-                particle.update();
-                particle.show();
-            }
+            background(40, 44, 52, 150);
+
+            nodes.forEach(node => {
+                node.move();
+                node.connectWith(nodes);
+                node.display();
+            });
         }
 
-        class Particle {
+        class Node {
             constructor(x, y) {
-                this.pos = createVector(x, y);
-                this.vel = p5.Vector.random2D();
-                this.acc = createVector();
-                this.maxSpeed = 2;
+                this.position = createVector(x, y);
+                this.velocity = p5.Vector.random2D().mult(random(0.5, 1.5));
+                this.size = random(2, 5);
+                this.color = color(random(100, 255), random(100, 255), random(100, 255));
             }
 
-            update() {
-                let target = createVector(centerX, centerY);
-                let force = p5.Vector.sub(target, this.pos);
-                force.setMag(0.05);
-                this.acc = force;
-
-                this.vel.add(this.acc);
-                this.vel.limit(this.maxSpeed);
-                this.pos.add(this.vel);
-
-                if (this.pos.x > width + 10 || this.pos.x < -10 ||
-                    this.pos.y > height + 10 || this.pos.y < -10) {
-                    this.pos = createVector(random(width), random(height));
-                }
+            move() {
+                this.position.add(this.velocity);
+                if (this.position.x < 0 || this.position.x > width) this.velocity.x *= -1;
+                if (this.position.y < 0 || this.position.y > height) this.velocity.y *= -1;
             }
 
-            show() {
-                fill(255, 255, 255);
-                ellipse(this.pos.x, this.pos.y, 5, 5);
+            connectWith(nodes) {
+                nodes.forEach(otherNode => {
+                    let distance = dist(this.position.x, this.position.y, otherNode.position.x, otherNode.position.y);
+                    if (distance < 150) {
+                        stroke(150, 150, 150, map(distance, 0, 150, 255, 0));
+                        line(this.position.x, this.position.y, otherNode.position.x, otherNode.position.y);
+                    }
+                });
+            }
+
+            display() {
+                noStroke();
+                fill(this.color);
+                ellipse(this.position.x, this.position.y, this.size);
             }
         }
 
         function windowResized() {
             resizeCanvas(windowWidth, windowHeight);
-            centerX = width / 2;
-            centerY = height / 2;
         }
     </script>
+    <a href="https://www.beautyisapattern.com/archive" class="archive-link">Explore the Archive</a>
 </body>
 </html>
