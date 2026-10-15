@@ -1,0 +1,87 @@
+<html>
+<head>
+    <title>Becoming Journey</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #1a1a2e;
+        }
+
+        .footer-link {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: #68aed2;
+            text-decoration: underline;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+    <script>
+        let particles = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 150; i++) {
+                particles.push(new Particle(random(width), random(height)));
+            }
+            noStroke();
+        }
+
+        function draw() {
+            background(26, 26, 46, 25);
+            for (let p of particles) {
+                p.move();
+                p.display();
+            }
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.position = createVector(x, y);
+                this.velocity = p5.Vector.random2D();
+                this.speed = random(1, 3);
+                this.size = random(2, 7);
+            }
+
+            move() {
+                this.position.add(this.velocity.copy().mult(this.speed));
+                this.edges();
+            }
+
+            display() {
+                fill(54, 131, 247, 150);
+                ellipse(this.position.x, this.position.y, this.size);
+
+                fill(255, 255, 255, 50);
+                ellipse(this.position.x, this.position.y, this.size * 0.5);
+            }
+
+            edges() {
+                if (this.position.x > width || this.position.x < 0) {
+                    this.velocity.x *= -1;
+                }
+                if (this.position.y > height || this.position.y < 0) {
+                    this.velocity.y *= -1;
+                }
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+    <a href="https://www.beautyisapattern.com/archive" class="footer-link">Explore the Archive</a>
+</body>
+</html>
