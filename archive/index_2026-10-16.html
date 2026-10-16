@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporal Tensions</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            background-color: #1e1e1e;
+        }
+
+        #archive-link {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        #archive-link:hover {
+            color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let points = [];
+        let quantities = 150;
+        let maxSize = 150;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < quantities; i++) {
+                points.push({
+                    x: random(width),
+                    y: random(height),
+                    speed: random(0.5, 2),
+                    size: random(5, maxSize),
+                    color: color(
+                        map(i, 0, quantities, 0, 255),
+                        map(i, 0, quantities, 0, 150),
+                        map(i, 0, quantities, 150, 255),
+                        150
+                    )
+                });
+            }
+        }
+
+        function draw() {
+            background(30);
+
+            points.forEach(point => {
+                fill(point.color);
+                noStroke();
+                ellipse(point.x, point.y, point.size);
+
+                // Gravity towards screen center
+                let centerX = width / 2;
+                let centerY = height / 2;
+
+                let angle = atan2(centerY - point.y, centerX - point.x);
+                point.x += cos(angle) * point.speed;
+                point.y += sin(angle) * point.speed;
+
+                // Cycle animation - out of screen reset
+                if (dist(point.x, point.y, centerX, centerY) < 20) {
+                    point.x = random(width);
+                    point.y = random(height);
+                }
+            });
+        }
+
+        function windowResized() {
+          resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+</body>
+</html>
