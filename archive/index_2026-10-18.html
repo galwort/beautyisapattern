@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troubles and Bonds</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #282c34;
+        }
+        .archive-link {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+            color: #61dafb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-decoration: none;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let particles = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function draw() {
+            background('#282c34');
+            particles.forEach(particle => {
+                particle.update();
+                particle.show();
+            });
+        }
+
+        class Particle {
+            constructor() {
+                this.position = createVector(random(width), random(height));
+                this.velocity = createVector(random(-1, 1), random(-1, 1));
+                this.size = random(2, 8);
+                this.color = [random(100, 255), random(100, 255), 255];
+            }
+
+            update() {
+                this.position.add(this.velocity);
+                this.edges();
+            }
+
+            edges() {
+                if (this.position.x > width || this.position.x < 0) {
+                    this.velocity.x *= -1;
+                }
+                if (this.position.y > height || this.position.y < 0) {
+                    this.velocity.y *= -1;
+                }
+            }
+
+            show() {
+                noStroke();
+                fill(this.color[0], this.color[1], this.color[2]);
+                ellipse(this.position.x, this.position.y, this.size, this.size);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</head>
+<body>
+    <div class="archive-link">
+        <a href="https://www.beautyisapattern.com/archive">Explore more works of heart</a>
+    </div>
+</body>
+</html>

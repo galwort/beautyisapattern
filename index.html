@@ -3,68 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deceptive Realities</title>
+    <title>Troubles and Bonds</title>
     <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
     <style>
         body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            background-color: #1a1a1a;
-            overflow: hidden;
-            color: #aaa;
-            font-family: Arial, sans-serif;
+            background-color: #282c34;
         }
-
-        #archive-link {
+        .archive-link {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
-            color: #ddd;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+            color: #61dafb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-decoration: none;
-            font-size: 0.9em;
-            transition: color 0.3s;
-        }
-
-        #archive-link:hover {
-            color: #fff;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let points = [];
-        const maxPoints = 200;
+        let particles = [];
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            noFill();
-            for (let i = 0; i < maxPoints; i++) {
-                points.push(createVector(random(width), random(height)));
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
             }
         }
 
         function draw() {
-            background(26, 26, 26, 20); // subtle trailing effect
-            strokeWeight(1.5);
-
-            points.forEach(p => {
-                let angle = noise(p.x * 0.005, p.y * 0.005) * TWO_PI * 4;
-                p.x += cos(angle);
-                p.y += sin(angle);
-
-                // Wrapping
-                if (p.x < 0) p.x = width;
-                if (p.x > width) p.x = 0;
-                if (p.y < 0) p.y = height;
-                if (p.y > height) p.y = 0;
-
-                stroke(lerpColor(color('#FF6347'), color('#4682B4'), abs(sin(frameCount * 0.01))));
-                point(p.x, p.y);
+            background('#282c34');
+            particles.forEach(particle => {
+                particle.update();
+                particle.show();
             });
+        }
+
+        class Particle {
+            constructor() {
+                this.position = createVector(random(width), random(height));
+                this.velocity = createVector(random(-1, 1), random(-1, 1));
+                this.size = random(2, 8);
+                this.color = [random(100, 255), random(100, 255), 255];
+            }
+
+            update() {
+                this.position.add(this.velocity);
+                this.edges();
+            }
+
+            edges() {
+                if (this.position.x > width || this.position.x < 0) {
+                    this.velocity.x *= -1;
+                }
+                if (this.position.y > height || this.position.y < 0) {
+                    this.velocity.y *= -1;
+                }
+            }
+
+            show() {
+                noStroke();
+                fill(this.color[0], this.color[1], this.color[2]);
+                ellipse(this.position.x, this.position.y, this.size, this.size);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
         }
     </script>
 </head>
 <body>
-
-<a id="archive-link" href="https://www.beautyisapattern.com/archive">Visit the Archive</a>
-
+    <div class="archive-link">
+        <a href="https://www.beautyisapattern.com/archive">Explore more works of heart</a>
+    </div>
 </body>
 </html>
