@@ -3,25 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Troubles and Bonds</title>
+    <title>Total Freedom</title>
     <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        body, html {
             margin: 0;
-            background-color: #282c34;
+            overflow: hidden;
+            background-color: #f5f5dc;
         }
-        .archive-link {
+        #archive-link {
             position: absolute;
             bottom: 20px;
-            text-align: center;
-            width: 100%;
-            color: #61dafb;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            left: 20px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            color: #333;
             text-decoration: none;
+            border: 2px solid #333;
+            padding: 0.5em 1em;
+            border-radius: 25px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        #archive-link:hover {
+            background-color: #333;
+            color: #fff;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
@@ -30,56 +35,54 @@
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < 100; i++) {
-                particles.push(new Particle());
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle(random(width), random(height)));
             }
         }
 
         function draw() {
-            background('#282c34');
-            particles.forEach(particle => {
-                particle.update();
-                particle.show();
+            background(245, 245, 220, 25);
+
+            particles.forEach(p => {
+                p.update();
+                p.show();
             });
         }
 
         class Particle {
-            constructor() {
-                this.position = createVector(random(width), random(height));
-                this.velocity = createVector(random(-1, 1), random(-1, 1));
-                this.size = random(2, 8);
-                this.color = [random(100, 255), random(100, 255), 255];
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.vel = createVector(random(-2, 2), random(-2, 2));
+                this.acc = createVector(0, 0);
+                this.maxSpeed = 2;
+                this.size = random(5, 30);
+                
+                this.color = color(random(225, 255), random(225, 255), random(150, 255));
             }
 
             update() {
-                this.position.add(this.velocity);
-                this.edges();
-            }
+                let mouse = createVector(mouseX, mouseY);
+                this.acc = p5.Vector.sub(mouse, this.pos);
+                this.acc.setMag(0.1);
 
-            edges() {
-                if (this.position.x > width || this.position.x < 0) {
-                    this.velocity.x *= -1;
-                }
-                if (this.position.y > height || this.position.y < 0) {
-                    this.velocity.y *= -1;
-                }
+                this.vel.add(this.acc);
+                this.vel.limit(this.maxSpeed);
+                this.pos.add(this.vel);
             }
 
             show() {
                 noStroke();
-                fill(this.color[0], this.color[1], this.color[2]);
-                ellipse(this.position.x, this.position.y, this.size, this.size);
+                fill(this.color);
+                ellipse(this.pos.x, this.pos.y, this.size);
             }
         }
-
+        
         function windowResized() {
             resizeCanvas(windowWidth, windowHeight);
         }
     </script>
 </head>
 <body>
-    <div class="archive-link">
-        <a href="https://www.beautyisapattern.com/archive">Explore more works of heart</a>
-    </div>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Visit the Archive</a>
 </body>
 </html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Freedom</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body, html {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f5f5dc;
+        }
+        #archive-link {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            color: #333;
+            text-decoration: none;
+            border: 2px solid #333;
+            padding: 0.5em 1em;
+            border-radius: 25px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        #archive-link:hover {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let particles = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle(random(width), random(height)));
+            }
+        }
+
+        function draw() {
+            background(245, 245, 220, 25);
+
+            particles.forEach(p => {
+                p.update();
+                p.show();
+            });
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.vel = createVector(random(-2, 2), random(-2, 2));
+                this.acc = createVector(0, 0);
+                this.maxSpeed = 2;
+                this.size = random(5, 30);
+                
+                this.color = color(random(225, 255), random(225, 255), random(150, 255));
+            }
+
+            update() {
+                let mouse = createVector(mouseX, mouseY);
+                this.acc = p5.Vector.sub(mouse, this.pos);
+                this.acc.setMag(0.1);
+
+                this.vel.add(this.acc);
+                this.vel.limit(this.maxSpeed);
+                this.pos.add(this.vel);
+            }
+
+            show() {
+                noStroke();
+                fill(this.color);
+                ellipse(this.pos.x, this.pos.y, this.size);
+            }
+        }
+        
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</head>
+<body>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Visit the Archive</a>
+</body>
+</html>
