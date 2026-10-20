@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Art of Growth</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #282c34;
+        }
+        canvas {
+            display: block;
+        }
+        #archive-link {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            color: #ffffffcc;
+            text-decoration: none;
+            font-family: 'Arial', sans-serif;
+            background-color: #444;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        #archive-link:hover {
+            background-color: #666;
+        }
+    </style>
+</head>
+<body>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Explore More</a>
+    <script>
+        let particles = [];
+        let colors = ['#FF5733', '#FFC300', '#DAF7A6', '#FF33F1'];
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 150; i++) {
+                particles.push(new Particle(random(width), random(height), random(colors)));
+            }
+        }
+
+        function draw() {
+            background(0, 25);
+            particles.forEach(p => {
+                p.update();
+                p.display();
+            });
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.pos = createVector(x, y);
+                this.vel = p5.Vector.random2D().mult(random(0.5, 3));
+                this.acc = createVector(0, 0.02);
+                this.radius = random(5, 12);
+                this.color = color;
+            }
+
+            applyForce(force) {
+                this.acc.add(force);
+            }
+
+            update() {
+                this.vel.add(this.acc);
+                this.pos.add(this.vel);
+                this.edges();
+                this.acc.mult(0);  // Reset acceleration each frame
+
+                // Adjust velocity gradually for floating effect
+                this.vel.mult(0.95);
+            }
+
+            edges() {
+                if (this.pos.x > width) this.pos.x = 0;
+                else if (this.pos.x < 0) this.pos.x = width;
+
+                if (this.pos.y > height) this.pos.y = 0;
+                else if (this.pos.y < 0) this.pos.y = height;
+            }
+
+            display() {
+                noStroke();
+                fill(this.color);
+                ellipse(this.pos.x, this.pos.y, this.radius * 2);
+            }
+        }
+    </script>
+</body>
+</html>

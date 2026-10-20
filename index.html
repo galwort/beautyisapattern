@@ -3,86 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Total Freedom</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>The Art of Growth</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        body, html {
+        body {
             margin: 0;
+            padding: 0;
             overflow: hidden;
-            background-color: #f5f5dc;
+            background: #282c34;
+        }
+        canvas {
+            display: block;
         }
         #archive-link {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            font-family: 'Roboto', sans-serif;
-            font-size: 16px;
-            color: #333;
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            color: #ffffffcc;
             text-decoration: none;
-            border: 2px solid #333;
-            padding: 0.5em 1em;
-            border-radius: 25px;
-            transition: background-color 0.3s, color 0.3s;
+            font-family: 'Arial', sans-serif;
+            background-color: #444;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
         #archive-link:hover {
-            background-color: #333;
-            color: #fff;
+            background-color: #666;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Explore More</a>
     <script>
         let particles = [];
-
+        let colors = ['#FF5733', '#FFC300', '#DAF7A6', '#FF33F1'];
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < 50; i++) {
-                particles.push(new Particle(random(width), random(height)));
+            for (let i = 0; i < 150; i++) {
+                particles.push(new Particle(random(width), random(height), random(colors)));
             }
         }
 
         function draw() {
-            background(245, 245, 220, 25);
-
+            background(0, 25);
             particles.forEach(p => {
                 p.update();
-                p.show();
+                p.display();
             });
         }
 
         class Particle {
-            constructor(x, y) {
+            constructor(x, y, color) {
                 this.pos = createVector(x, y);
-                this.vel = createVector(random(-2, 2), random(-2, 2));
-                this.acc = createVector(0, 0);
-                this.maxSpeed = 2;
-                this.size = random(5, 30);
-                
-                this.color = color(random(225, 255), random(225, 255), random(150, 255));
+                this.vel = p5.Vector.random2D().mult(random(0.5, 3));
+                this.acc = createVector(0, 0.02);
+                this.radius = random(5, 12);
+                this.color = color;
+            }
+
+            applyForce(force) {
+                this.acc.add(force);
             }
 
             update() {
-                let mouse = createVector(mouseX, mouseY);
-                this.acc = p5.Vector.sub(mouse, this.pos);
-                this.acc.setMag(0.1);
-
                 this.vel.add(this.acc);
-                this.vel.limit(this.maxSpeed);
                 this.pos.add(this.vel);
+                this.edges();
+                this.acc.mult(0);  // Reset acceleration each frame
+
+                // Adjust velocity gradually for floating effect
+                this.vel.mult(0.95);
             }
 
-            show() {
+            edges() {
+                if (this.pos.x > width) this.pos.x = 0;
+                else if (this.pos.x < 0) this.pos.x = width;
+
+                if (this.pos.y > height) this.pos.y = 0;
+                else if (this.pos.y < 0) this.pos.y = height;
+            }
+
+            display() {
                 noStroke();
                 fill(this.color);
-                ellipse(this.pos.x, this.pos.y, this.size);
+                ellipse(this.pos.x, this.pos.y, this.radius * 2);
             }
         }
-        
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
     </script>
-</head>
-<body>
-    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Visit the Archive</a>
 </body>
 </html>
