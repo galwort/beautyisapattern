@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The School of Experience</title>
+    <link rel="icon" type="image/x-icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #333;
+        }
+        #archive-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        #archive-link:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <script>
+        let experiencePath = [];
+        let pathIndex = 0;
+        const dotCount = 120;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < dotCount; i++) {
+                experiencePath.push(new Dot(createVector(random(width), random(height))));
+            }
+        }
+
+        function draw() {
+            background(51, 51, 51);
+            stroke(255, 200);
+            noFill();
+            beginShape();
+
+            experiencePath.forEach(dot => {
+                dot.alphaFade();
+                dot.render();
+                dot.update();
+                vertex(dot.position.x, dot.position.y);
+            });
+            endShape(CLOSE);
+
+            if (pathIndex >= dotCount) {
+                experiencePath.shift(); 
+                experiencePath.push(new Dot(createVector(random(width), random(height))));
+            }
+            pathIndex++;
+        }
+
+        class Dot {
+            constructor(position) {
+                this.position = position.copy();
+                this.velocity = createVector(random(-2, 2), random(-2, 2));
+                this.maxSpeed = 2;
+                this.alpha = 255;
+            }
+
+            update() {
+                this.position.add(this.velocity);
+
+                // Bounce off edges
+                if (this.position.x > width || this.position.x < 0) {
+                    this.velocity.x *= -1;
+                }
+                if (this.position.y > height || this.position.y < 0) {
+                    this.velocity.y *= -1;
+                }
+            }
+
+            alphaFade() {
+                this.alpha = this.alpha > 0 ? this.alpha - 0.5 : 255;
+                this.velocity.limit(this.maxSpeed);
+            }
+
+            render() {
+                stroke(255, 150);
+                fill(255, this.alpha);
+                ellipse(this.position.x, this.position.y, 10);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Archive</a>
+</body>
+</html>
