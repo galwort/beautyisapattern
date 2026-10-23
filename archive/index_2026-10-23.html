@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Hidden Beauty</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        a {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #333;
+            text-decoration: none;
+            font-size: 12px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let particles = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 200; i++) {
+                particles.push(new Particle(random(width), random(height)));
+            }
+        }
+
+        function draw() {
+            background(30, 30, 50, 50); // Subtle gradient-like background
+            for (let particle of particles) {
+                particle.move();
+                particle.display();
+            }
+            drawSubtleOverlay();
+        }
+
+        function drawSubtleOverlay() {
+            fill(255, 30);
+            noStroke();
+            rect(0, 0, width, height);
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.vel = createVector(0, 0);
+                this.acc = createVector();
+                this.r = random(2, 8);
+                this.maxSpeed = 2;
+            }
+
+            move() {
+                let mouse = createVector(mouseX, mouseY);
+                this.acc = p5.Vector.sub(mouse, this.pos);
+                this.acc.setMag(0.1);
+
+                this.vel.add(this.acc);
+                this.vel.limit(this.maxSpeed);
+                this.pos.add(this.vel);
+            }
+
+            display() {
+                fill(150, 100, 255, 200);
+                noStroke();
+                ellipse(this.pos.x, this.pos.y, this.r * 2);
+                let gradient = drawingContext.createRadialGradient(this.pos.x, this.pos.y, this.r * 0.2, this.pos.x, this.pos.y, this.r);
+                gradient.addColorStop(0, `rgba(255, 255, 255, 0.8)`);
+                gradient.addColorStop(1, `rgba(150, 100, 255, 0)`);
+                drawingContext.fillStyle = gradient;
+                ellipse(this.pos.x, this.pos.y, this.r * 2);
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <a href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
+</body>
+</html>
