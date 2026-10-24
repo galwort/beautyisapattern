@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Elegance of Silence</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #121212;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .archive-link {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            text-decoration: none;
+            color: #007acc;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let points = [];
+        let mult = 0.003;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            background(18, 18, 18);
+            noiseDetail(1);
+
+            let density = 80;
+            let space = width / density;
+
+            for (let x = 0; x < width; x += space) {
+                for (let y = 0; y < height; y += space) {
+                    let p = createVector(x + random(-10, 10), y + random(-10, 10));
+                    points.push(p);
+                }
+            }
+        }
+
+        function draw() {
+            noStroke();
+            for (let i = 0; i < points.length; i++) {
+                let angle = noise(points[i].x * mult, points[i].y * mult) * TWO_PI * 4;
+                points[i].add(createVector(cos(angle), sin(angle)));
+
+                // Create a gradient color
+                fill(lerpColor(color(0, 160, 255, 25), color(255, 90, 0, 25), points[i].y / height));
+                ellipse(points[i].x, points[i].y, 1.2);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+            background(18, 18, 18);
+            points = [];
+            setup();
+        }
+    </script>
+    <a href="https://www.beautyisapattern.com/archive" class="archive-link">Explore the Archive</a>
+</body>
+</html>
