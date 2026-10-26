@@ -1,84 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
-    <title>The Elegance of Understanding</title>
+    <title>Relentless Progress</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #101010;
         }
-
-        .link-container {
+        .archive-link {
             position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 10;
-        }
-
-        a {
-            color: #ffffff;
-            font-family: Arial, sans-serif;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 12px;
+            border-radius: 8px;
             text-decoration: none;
-            background-color: #ff6f61;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
+            color: black;
+            font-family: 'Lucida Console', Monaco, monospace;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
         }
-
-        a:hover {
-            background-color: #ff8c80;
+        .archive-link:hover {
+            background-color: #000;
+            color: #fff;
         }
     </style>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-</head>
-<body>
-
-    <div class="link-container"><a href="https://www.beautyisapattern.com/archive">Explore Timeless Patterns</a></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
     <script>
-        let angle = 0;
-        let colors = ['#ff6f61', '#ffd700', '#32cd32', '#1e90ff', '#ff69b4'];
+        let particles = [];
+        let flowField;
+        let cols, rows;
+        const scl = 20;
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            noFill();
+            cols = floor(width / scl);
+            rows = floor(height / scl);
+            flowField = new Array(cols * rows);
+            for (let i = 0; i < 200; i++) {
+                particles[i] = new Particle();
+            }
         }
 
         function draw() {
-            background(16);
-            translate(width / 2, height / 2);
-            rotate(angle * 0.5);
-            strokeWeight(1.5);
-
-            for (let i = 0; i < 20; i++) {
-                stroke(colors[i % colors.length]);
-                let radius = map(sin(angle + i), -1, 1, 100, 400);
-                bezierCircle(radius);
-                rotate(TWO_PI / 20);
+            background(255, 220, 200, 10);
+            let yoff = 0;
+            for (let y = 0; y < rows; y++) {
+                let xoff = 0;
+                for (let x = 0; x < cols; x++) {
+                    let index = (x + y * cols);
+                    let angle = noise(xoff, yoff) * TWO_PI * 2;
+                    let v = p5.Vector.fromAngle(angle);
+                    v.setMag(0.3);
+                    flowField[index] = v;
+                    xoff += 0.1;
+                }
+                yoff += 0.1;
             }
 
-            angle += 0.01;
-        }
-
-        function bezierCircle(r) {
-            beginShape();
-            for (let a = 0; a < TWO_PI; a += PI / 8) {
-                let x = r * cos(a) + random(-10, 10);
-                let y = r * sin(a) + random(-10, 10);
-                vertex(x, y);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].follow(flowField);
+                particles[i].update();
+                particles[i].edges();
+                particles[i].show();
             }
-            endShape(CLOSE);
         }
 
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
+        class Particle {
+            constructor() {
+                this.pos = createVector(random(width), random(height));
+                this.vel = createVector(0, 0);
+                this.acc = createVector(0, 0);
+                this.maxSpeed = 4;
+            }
+
+            follow(vectors) {
+                let x = floor(this.pos.x / scl);
+                let y = floor(this.pos.y / scl);
+                let index = x + y * cols;
+                let force = vectors[index];
+                this.applyForce(force);
+            }
+
+            applyForce(force) {
+                this.acc.add(force);
+            }
+
+            update() {
+                this.vel.add(this.acc);
+                this.vel.limit(this.maxSpeed);
+                this.pos.add(this.vel);
+                this.acc.mult(0);
+            }
+
+            edges() {
+                if (this.pos.x > width) this.pos.x = 0;
+                if (this.pos.x < 0) this.pos.x = width;
+                if (this.pos.y > height) this.pos.y = 0;
+                if (this.pos.y < 0) this.pos.y = height;
+            }
+
+            show() {
+                noStroke();
+                fill(50, 100, 150, 100);
+                ellipse(this.pos.x, this.pos.y, 4);
+            }
         }
+
     </script>
-
+</head>
+<body>
+    <a href="https://www.beautyisapattern.com/archive" class="archive-link">Explore the Archive</a>
 </body>
 </html>
