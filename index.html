@@ -2,116 +2,85 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Relentless Progress</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth from Mistakes</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
     <style>
         body {
             margin: 0;
             overflow: hidden;
+            background-color: #0d0d0d;
         }
-        .archive-link {
+        footer {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 5px 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: black;
-            font-family: 'Lucida Console', Monaco, monospace;
+            bottom: 10px;
+            left: 10px;
             font-size: 14px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .archive-link:hover {
-            background-color: #000;
             color: #fff;
         }
+        a {
+            text-decoration: none;
+            color: #fff;
+            border-bottom: 1px solid #fff;
+        }
+        a:hover {
+            color: #FFD700;
+            border-color: #FFD700;
+        }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let particles = [];
-        let flowField;
-        let cols, rows;
-        const scl = 20;
+        let mistakes = [];
+        let colors = ['#FF5733', '#33B5FF', '#75FF33', '#F333FF'];
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            cols = floor(width / scl);
-            rows = floor(height / scl);
-            flowField = new Array(cols * rows);
-            for (let i = 0; i < 200; i++) {
-                particles[i] = new Particle();
+            for (let i = 0; i < 100; i++) {
+                mistakes.push(new Mistake(random(width), random(height), random(5, 15)));
             }
         }
 
         function draw() {
-            background(255, 220, 200, 10);
-            let yoff = 0;
-            for (let y = 0; y < rows; y++) {
-                let xoff = 0;
-                for (let x = 0; x < cols; x++) {
-                    let index = (x + y * cols);
-                    let angle = noise(xoff, yoff) * TWO_PI * 2;
-                    let v = p5.Vector.fromAngle(angle);
-                    v.setMag(0.3);
-                    flowField[index] = v;
-                    xoff += 0.1;
-                }
-                yoff += 0.1;
-            }
-
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].follow(flowField);
-                particles[i].update();
-                particles[i].edges();
-                particles[i].show();
-            }
+            background(0, 5); // leaves trails
+            mistakes.forEach(mistake => {
+                mistake.update();
+                mistake.display();
+            });
         }
 
-        class Particle {
-            constructor() {
-                this.pos = createVector(random(width), random(height));
-                this.vel = createVector(0, 0);
-                this.acc = createVector(0, 0);
-                this.maxSpeed = 4;
-            }
-
-            follow(vectors) {
-                let x = floor(this.pos.x / scl);
-                let y = floor(this.pos.y / scl);
-                let index = x + y * cols;
-                let force = vectors[index];
-                this.applyForce(force);
-            }
-
-            applyForce(force) {
-                this.acc.add(force);
+        class Mistake {
+            constructor(x, y, size) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.color = random(colors);
+                this.angle = random(TWO_PI);
+                this.speed = random(0.5, 2);
             }
 
             update() {
-                this.vel.add(this.acc);
-                this.vel.limit(this.maxSpeed);
-                this.pos.add(this.vel);
-                this.acc.mult(0);
+                this.x += cos(this.angle) * this.speed;
+                this.y += sin(this.angle) * this.speed;
+
+                this.angle += map(noise(this.x * 0.01, this.y * 0.01), 0, 1, -0.1, 0.1);
+
+                if (this.x > width) this.x = 0;
+                if (this.x < 0) this.x = width;
+                if (this.y > height) this.y = 0;
+                if (this.y < 0) this.y = height;
             }
 
-            edges() {
-                if (this.pos.x > width) this.pos.x = 0;
-                if (this.pos.x < 0) this.pos.x = width;
-                if (this.pos.y > height) this.pos.y = 0;
-                if (this.pos.y < 0) this.pos.y = height;
-            }
-
-            show() {
+            display() {
                 noStroke();
-                fill(50, 100, 150, 100);
-                ellipse(this.pos.x, this.pos.y, 4);
+                fill(this.color);
+                ellipse(this.x, this.y, this.size, this.size);
             }
         }
-
     </script>
 </head>
 <body>
-    <a href="https://www.beautyisapattern.com/archive" class="archive-link">Explore the Archive</a>
+    <footer>
+        <a href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+    </footer>
 </body>
 </html>

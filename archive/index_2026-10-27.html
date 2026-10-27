@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth from Mistakes</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0d0d0d;
+        }
+        footer {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 14px;
+            color: #fff;
+        }
+        a {
+            text-decoration: none;
+            color: #fff;
+            border-bottom: 1px solid #fff;
+        }
+        a:hover {
+            color: #FFD700;
+            border-color: #FFD700;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let mistakes = [];
+        let colors = ['#FF5733', '#33B5FF', '#75FF33', '#F333FF'];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 100; i++) {
+                mistakes.push(new Mistake(random(width), random(height), random(5, 15)));
+            }
+        }
+
+        function draw() {
+            background(0, 5); // leaves trails
+            mistakes.forEach(mistake => {
+                mistake.update();
+                mistake.display();
+            });
+        }
+
+        class Mistake {
+            constructor(x, y, size) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.color = random(colors);
+                this.angle = random(TWO_PI);
+                this.speed = random(0.5, 2);
+            }
+
+            update() {
+                this.x += cos(this.angle) * this.speed;
+                this.y += sin(this.angle) * this.speed;
+
+                this.angle += map(noise(this.x * 0.01, this.y * 0.01), 0, 1, -0.1, 0.1);
+
+                if (this.x > width) this.x = 0;
+                if (this.x < 0) this.x = width;
+                if (this.y > height) this.y = 0;
+                if (this.y < 0) this.y = height;
+            }
+
+            display() {
+                noStroke();
+                fill(this.color);
+                ellipse(this.x, this.y, this.size, this.size);
+            }
+        }
+    </script>
+</head>
+<body>
+    <footer>
+        <a href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+    </footer>
+</body>
+</html>
