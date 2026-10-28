@@ -3,84 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Growth from Mistakes</title>
+    <title>Wave of Technology</title>
     <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #0d0d0d;
+            background-color: #eceff1;
         }
         footer {
-            position: absolute;
+            position: fixed;
             bottom: 10px;
             left: 10px;
+            font-family: Arial, sans-serif;
             font-size: 14px;
-            color: #fff;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 4px 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         a {
+            color: #0077c2;
             text-decoration: none;
-            color: #fff;
-            border-bottom: 1px solid #fff;
         }
         a:hover {
-            color: #FFD700;
-            border-color: #FFD700;
+            text-decoration: underline;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
     <script>
-        let mistakes = [];
-        let colors = ['#FF5733', '#33B5FF', '#75FF33', '#F333FF'];
+        let steamroller;
+        let roads = [];
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < 100; i++) {
-                mistakes.push(new Mistake(random(width), random(height), random(5, 15)));
+            steamroller = new Steamroller();
+            for (let i = 0; i < width; i += 60) {
+                roads.push(new RoadLine(i));
             }
         }
 
         function draw() {
-            background(0, 5); // leaves trails
-            mistakes.forEach(mistake => {
-                mistake.update();
-                mistake.display();
+            background(236, 239, 241);
+            roads.forEach(road => {
+                road.update();
+                road.display();
             });
+            steamroller.move();
+            steamroller.display();
         }
 
-        class Mistake {
-            constructor(x, y, size) {
-                this.x = x;
-                this.y = y;
-                this.size = size;
-                this.color = random(colors);
-                this.angle = random(TWO_PI);
-                this.speed = random(0.5, 2);
+        class Steamroller {
+            constructor() {
+                this.x = -100;
+                this.size = 150;
             }
 
-            update() {
-                this.x += cos(this.angle) * this.speed;
-                this.y += sin(this.angle) * this.speed;
-
-                this.angle += map(noise(this.x * 0.01, this.y * 0.01), 0, 1, -0.1, 0.1);
-
-                if (this.x > width) this.x = 0;
-                if (this.x < 0) this.x = width;
-                if (this.y > height) this.y = 0;
-                if (this.y < 0) this.y = height;
+            move() {
+                this.x += 2;
+                if (this.x > width + this.size) {
+                    this.x = -this.size;
+                }
             }
 
             display() {
-                noStroke();
-                fill(this.color);
-                ellipse(this.x, this.y, this.size, this.size);
+                fill(33, 150, 243);
+                rect(this.x - this.size / 2, height - 120, this.size, 100);
+                fill(25, 118, 210);
+                ellipse(this.x, height - 70, 90, 90);
+                ellipse(this.x + this.size / 2, height - 70, 90, 90);
+            }
+        }
+
+        class RoadLine {
+            constructor(startX) {
+                this.x = startX;
+                this.y = height - 150;
+                this.w = 50;
+                this.h = 4;
+                this.ranY = random(-20, 20);
+            }
+
+            update() {
+                this.y += this.ranY * 0.01;
+                this.ranY += random(-0.5, 0.5);
+            }
+
+            display() {
+                stroke(0);
+                strokeWeight(this.h);
+                line(this.x, this.y, this.x + this.w, this.y);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+            roads = [];
+            for (let i = 0; i < width; i += 60) {
+                roads.push(new RoadLine(i));
             }
         }
     </script>
-</head>
-<body>
+
     <footer>
-        <a href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+        <a href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Archive</a>
     </footer>
 </body>
 </html>
