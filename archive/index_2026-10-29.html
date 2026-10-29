@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constellations in Harmony</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000000;
+            color: #ffffff;
+        }
+        .link {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            border: 1px solid #ffffff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let stars = [];
+        let pairs = [];
+        let fallingStars = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+
+            // Static stars representing the constellation
+            for (let i = 0; i < 60; i++) {
+                stars.push({
+                    x: random(width),
+                    y: random(height / 2, height),
+                    size: random(2, 4)
+                });
+            }
+
+            // Star pairs to blink (representing a connection)
+            for (let i = 0; i < 10; i++) {
+                let a = parseInt(random(stars.length));
+                let b = parseInt(random(stars.length));
+                pairs.push([a, b]);
+            }
+
+            // Create falling stars that symbolize joining the universe
+            for (let i = 0; i < 3; i++) {
+                fallingStars.push(createFallingStar());
+            }
+        }
+
+        function draw() {
+            background(0, 10);
+            noStroke();
+
+            // Draw static stars
+            fill(255);
+            stars.forEach(star => {
+                circle(star.x, star.y, star.size);
+            });
+
+            // Animate connections
+            let time = millis() % 4000;
+            pairs.forEach(([a, b], index) => {
+                if (time < 2000) {
+                    drawConnection(stars[a], stars[b]);
+                }
+            });
+
+            // Draw and animate falling stars
+            fill(255, 215, 0);
+            fallingStars.forEach((star, index) => {
+                ellipse(star.x, star.y, star.size, star.size * 2);
+                star.y += star.speed;
+                if (star.y > height + 100) {
+                    fallingStars[index] = createFallingStar();
+                }
+            });
+        }
+
+        function drawConnection(starA, starB) {
+            stroke(255, 255, 255, 150);
+            line(starA.x, starA.y, starB.x, starB.y);
+        }
+
+        function createFallingStar() {
+            return {
+                x: random(width),
+                y: random(-100, 0),
+                size: random(3, 5),
+                speed: random(2, 4)
+            };
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+    <a class="link" href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
+</body>
+
+</html>
