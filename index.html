@@ -3,85 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Existential Expression</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>Momentum Unleashed</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #1a1a1a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
+            background: #f4f4f4;
         }
         footer {
-            position: absolute;
-            bottom: 10px;
+            position: fixed;
+            bottom: 0;
             width: 100%;
             text-align: center;
-            font-size: 0.8rem;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #fff;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-family: Arial, sans-serif;
+            color: #333;
         }
-        a {
-            color: #f5f5f5;
+        footer a {
+            color: #555;
             text-decoration: none;
-            margin: 0 5px;
-            transition: color 0.3s ease;
+            font-weight: bold;
         }
-        a:hover {
-            color: #ff6961;
+        footer a:hover {
+            color: #000;
         }
     </style>
+</head>
+<body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let numParticles = 100;
-        let particles = [];
+        let elements = [];
 
         function setup() {
-            createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < numParticles; i++) {
-                particles.push(new Particle(random(width), random(height)));
+            let canvas = createCanvas(windowWidth, windowHeight);
+            canvas.style('display', 'block');
+            angleMode(DEGREES);
+
+            for (let i = 0; i < 80; i++) {
+                elements.push(new RotatingElement());
             }
         }
 
         function draw() {
-            background(26);
-            particles.forEach(p => {
-                p.update();
-                p.display();
+            background(240);
+            elements.forEach(element => {
+                element.update();
+                element.display();
             });
         }
 
-        class Particle {
-            constructor(x, y) {
-                this.pos = createVector(x, y);
-                this.vel = createVector(random(-1, 1), random(-1, 1));
-                this.acc = createVector(0, 0);
-                this.size = random(5, 15);
+        class RotatingElement {
+            constructor() {
+                this.pos = createVector(random(width), random(height));
+                this.velocity = createVector(random(-1.5, 1.5), random(-1.5, 1.5));
+                this.size = random(30, 70); 
+                this.angle = random(360);
+                this.rotationSpeed = random(0.5, 2);
+                this.color = color(random(200, 255), random(150, 255), random(150, 255), 200);
             }
 
             update() {
-                this.acc = createVector(noise(this.pos.x * 0.005, this.pos.y * 0.005) - 0.5, noise(this.pos.y * 0.005, this.pos.x * 0.005) - 0.5); 
-                this.vel.add(this.acc);
-                this.vel.limit(3);
-                this.pos.add(this.vel);
+                this.pos.add(this.velocity);
+                this.angle += this.rotationSpeed;
 
-                this.edges();
+                if (this.pos.x > width || this.pos.x < 0) {
+                    this.velocity.x *= -1;
+                }
+                if (this.pos.y > height || this.pos.y < 0) {
+                    this.velocity.y *= -1;
+                }
             }
 
             display() {
-                let colorValue = map(this.size, 5, 15, 150, 255);
-                fill(colorValue, 10, 10, 100);
-                noStroke();
-                ellipse(this.pos.x, this.pos.y, this.size);
-            }
-
-            edges() {
-                if (this.pos.x > width || this.pos.x < 0) this.vel.x *= -1;
-                if (this.pos.y > height || this.pos.y < 0) this.vel.y *= -1;
+                push();
+                translate(this.pos.x, this.pos.y);
+                rotate(this.angle);
+                fill(this.color);
+                stroke(255);
+                strokeWeight(0.5);
+                rectMode(CENTER);
+                beginShape();
+                for (let i = 0; i < 4; i++) {
+                    let x = cos(90 * i) * this.size;
+                    let y = sin(90 * i) * this.size;
+                    vertex(x, y);
+                }
+                endShape(CLOSE);
+                pop();
             }
         }
 
@@ -89,10 +99,8 @@
             resizeCanvas(windowWidth, windowHeight);
         }
     </script>
-</head>
-<body>
     <footer>
-        <a href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
+        <a href="https://www.beautyisapattern.com/archive">Explore More Patterns</a>
     </footer>
 </body>
 </html>

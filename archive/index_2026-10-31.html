@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Momentum Unleashed</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #f4f4f4;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        footer a {
+            color: #555;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let elements = [];
+
+        function setup() {
+            let canvas = createCanvas(windowWidth, windowHeight);
+            canvas.style('display', 'block');
+            angleMode(DEGREES);
+
+            for (let i = 0; i < 80; i++) {
+                elements.push(new RotatingElement());
+            }
+        }
+
+        function draw() {
+            background(240);
+            elements.forEach(element => {
+                element.update();
+                element.display();
+            });
+        }
+
+        class RotatingElement {
+            constructor() {
+                this.pos = createVector(random(width), random(height));
+                this.velocity = createVector(random(-1.5, 1.5), random(-1.5, 1.5));
+                this.size = random(30, 70); 
+                this.angle = random(360);
+                this.rotationSpeed = random(0.5, 2);
+                this.color = color(random(200, 255), random(150, 255), random(150, 255), 200);
+            }
+
+            update() {
+                this.pos.add(this.velocity);
+                this.angle += this.rotationSpeed;
+
+                if (this.pos.x > width || this.pos.x < 0) {
+                    this.velocity.x *= -1;
+                }
+                if (this.pos.y > height || this.pos.y < 0) {
+                    this.velocity.y *= -1;
+                }
+            }
+
+            display() {
+                push();
+                translate(this.pos.x, this.pos.y);
+                rotate(this.angle);
+                fill(this.color);
+                stroke(255);
+                strokeWeight(0.5);
+                rectMode(CENTER);
+                beginShape();
+                for (let i = 0; i < 4; i++) {
+                    let x = cos(90 * i) * this.size;
+                    let y = sin(90 * i) * this.size;
+                    vertex(x, y);
+                }
+                endShape(CLOSE);
+                pop();
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+    <footer>
+        <a href="https://www.beautyisapattern.com/archive">Explore More Patterns</a>
+    </footer>
+</body>
+</html>
