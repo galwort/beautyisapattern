@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whispers of Change</title>
+    <link rel="icon" type="image/x-icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #e0f7fa;
+        }
+        footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            color: #004d40;
+            font-size: 16px;
+        }
+        a {
+            color: #00796b;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #004d40;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+
+        let particles = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 150; i++) {
+                particles.push(new Particle(random(width), random(height)));
+            }
+            noStroke();
+        }
+
+        function draw() {
+            background('#e0f7fa');
+            for (let p of particles) {
+                p.update();
+                p.display();
+            }
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.r = random(4, 6);
+                this.alpha = random(100, 255);
+                this.color = color(random(100, 255), random(100, 150), random(100))
+                this.lifespan = 255;
+                this.velocity = createVector(random(-2, 2), random(-1, 1));
+            }
+
+            update() {
+                this.pos.add(this.velocity);
+                this.lifespan -= 1;
+                if (this.pos.x > width || this.pos.x < 0) this.velocity.x *= -1;
+                if (this.pos.y > height || this.pos.y < 0) this.velocity.y *= -1;
+            }
+
+            display() {
+                fill(red(this.color), green(this.color), blue(this.color), this.alpha);
+                ellipse(this.pos.x, this.pos.y, this.r * 2);
+            }
+        }
+
+    </script>
+    <footer>
+        <a href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
+    </footer>
+</body>
+</html>
