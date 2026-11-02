@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony in Motion</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #151515;
+        }
+        canvas {
+            z-index: -1;
+        }
+        #archive-link {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #ffffff;
+            text-decoration: none;
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        // Creates a flowing ripple effect representative of discipline leading to harmony
+        let numRows = 10;
+        let numCols = 10;
+        let grid = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < numRows; i++) {
+                grid[i] = [];
+                for (let j = 0; j < numCols; j++) {
+                    let x = map(j, 0, numCols, 0, width);
+                    let y = map(i, 0, numRows, 0, height);
+                    grid[i][j] = createVector(x, y);
+                }
+            }
+        }
+
+        function draw() {
+            background(21, 21, 21, 80);
+            stroke(200, 150);
+            noFill();
+
+            for (let i = 0; i < numRows; i++) {
+                beginShape(TRIANGLE_STRIP);
+                for (let j = 0; j < numCols; j++) {
+                    let vert = grid[i][j];
+                    let offsetX = sin(frameCount * 0.01 + vert.y * 0.1) * 100;
+                    let offsetY = cos(frameCount * 0.01 + vert.x * 0.1) * 40;
+                    vertex(vert.x + offsetX, vert.y + offsetY);
+                }
+                endShape();
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+            setup();
+        }
+    </script>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+</body>
+</html>
