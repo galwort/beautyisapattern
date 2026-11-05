@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflective Leadership</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+
+        .archive-link {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(50, 50, 50, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            font-size: 14px;
+        }
+
+        .archive-link:hover {
+            background-color: #666;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let leaders = [];
+        let followers = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 3; i++) {
+                leaders.push(new Leader(random(width), random(height), random(100, 150)));
+            }
+            
+            for (let j = 0; j<5; j++) {
+                followers.push(new Follower(random(width), random(height), random(20, 40), leaders));
+            }
+
+            noStroke();
+            frameRate(60);
+        }
+
+        function draw() {
+            background(240);
+            for (let leader of leaders) {
+                leader.move();
+                leader.display();
+            }
+            for (let follower of followers) {
+                follower.follow();
+                follower.display();
+            }
+        }
+
+        class Leader {
+            constructor(x, y, size) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.angle = random(TWO_PI);
+                this.speed = 0.5;
+            }
+
+            move() {
+                this.angle += radians(this.speed);
+                this.x += cos(this.angle) * 1.5;
+                this.y += sin(this.angle) * 1.5;
+                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+                    this.angle += PI;
+                }
+            }
+
+            display() {
+                fill('rgba(33, 150, 243, 0.8)');
+                ellipse(this.x, this.y, this.size);
+            }
+        }
+
+        class Follower {
+            constructor(x, y, size, leaders) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.leaders = leaders;
+            }
+
+            follow() {
+                let closestDistance = Infinity;
+                let closestLeader = null;
+                for (let leader of this.leaders) {
+                    let d = dist(this.x, this.y, leader.x, leader.y);
+                    if (d < closestDistance) {
+                        closestDistance = d;
+                        closestLeader = leader;
+                    }
+                }
+                if (closestLeader) {
+                    this.x += (closestLeader.x - this.x) * 0.02;
+                    this.y += (closestLeader.y - this.y) * 0.02;
+                }
+            }
+
+            display() {
+                fill('rgba(244, 67, 54, 0.8)');
+                ellipse(this.x, this.y, this.size);
+            }
+        }
+    </script>
+    <a class="archive-link" href="https://www.beautyisapattern.com/archive" target="_blank">View Archive</a>
+</body>
+</html>

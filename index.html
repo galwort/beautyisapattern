@@ -3,76 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journey of the Heart</title>
+    <title>Reflective Leadership</title>
     <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background: #f0f8ff;
-            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
         }
-        a.archive-link {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            color: #2c3e50;
-            text-decoration: none;
-            background-color: #ecf0f1;
-            padding: 8px 15px;
+
+        .archive-link {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(50, 50, 50, 0.8);
+            padding: 10px;
             border-radius: 5px;
-            transition: background 0.3s;
+            text-decoration: none;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            font-size: 14px;
         }
-        a.archive-link:hover {
-            background-color: #bdc3c7;
+
+        .archive-link:hover {
+            background-color: #666;
         }
     </style>
 </head>
 <body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-<script>
-    let t = 0;
-    let hearts = [];
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let leaders = [];
+        let followers = [];
 
-    function setup() {
-        createCanvas(windowWidth, windowHeight);
-        noStroke();
-        fill(255, 105, 180, 100);  // Soft pink
-    }
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 3; i++) {
+                leaders.push(new Leader(random(width), random(height), random(100, 150)));
+            }
+            
+            for (let j = 0; j<5; j++) {
+                followers.push(new Follower(random(width), random(height), random(20, 40), leaders));
+            }
 
-    function draw() {
-        background(240, 248, 255);
-        translate(width / 2, height / 2);
-
-        let r = height / 3.5 * (sin(TWO_PI * t) + 1.1);  // Dynamic radius
-        let positions = 18;   // Number of hearts
-
-        for (let i = 0; i < positions; i++) {
-            let angle = TWO_PI / positions * i;
-            let x = r * cos(angle + t);
-            let y = r * sin(angle + t);
-            let size = map(sin(t + angle), -1, 1, 10, 30);
-            heartShape(x, y, size);
+            noStroke();
+            frameRate(60);
         }
 
-        t += 0.005;  // Increment time
-    }
+        function draw() {
+            background(240);
+            for (let leader of leaders) {
+                leader.move();
+                leader.display();
+            }
+            for (let follower of followers) {
+                follower.follow();
+                follower.display();
+            }
+        }
 
-    function heartShape(x, y, size) {
-        push();
-        translate(x, y);
-        beginShape();
-        vertex(0, -size / 2);
-        bezierVertex(-size / 2, -size, -size, size * 0.2, 0, size);
-        bezierVertex(size, size * 0.2, size / 2, -size, 0, -size / 2);
-        endShape(CLOSE);
-        pop();
-    }
+        class Leader {
+            constructor(x, y, size) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.angle = random(TWO_PI);
+                this.speed = 0.5;
+            }
 
-    function windowResized() {
-        resizeCanvas(windowWidth, windowHeight);
-    }
-</script>
-<a class="archive-link" href="https://www.beautyisapattern.com/archive">Explore Archive</a>
+            move() {
+                this.angle += radians(this.speed);
+                this.x += cos(this.angle) * 1.5;
+                this.y += sin(this.angle) * 1.5;
+                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+                    this.angle += PI;
+                }
+            }
+
+            display() {
+                fill('rgba(33, 150, 243, 0.8)');
+                ellipse(this.x, this.y, this.size);
+            }
+        }
+
+        class Follower {
+            constructor(x, y, size, leaders) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.leaders = leaders;
+            }
+
+            follow() {
+                let closestDistance = Infinity;
+                let closestLeader = null;
+                for (let leader of this.leaders) {
+                    let d = dist(this.x, this.y, leader.x, leader.y);
+                    if (d < closestDistance) {
+                        closestDistance = d;
+                        closestLeader = leader;
+                    }
+                }
+                if (closestLeader) {
+                    this.x += (closestLeader.x - this.x) * 0.02;
+                    this.y += (closestLeader.y - this.y) * 0.02;
+                }
+            }
+
+            display() {
+                fill('rgba(244, 67, 54, 0.8)');
+                ellipse(this.x, this.y, this.size);
+            }
+        }
+    </script>
+    <a class="archive-link" href="https://www.beautyisapattern.com/archive" target="_blank">View Archive</a>
 </body>
 </html>
