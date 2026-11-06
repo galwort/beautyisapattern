@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trail of Guidance</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #1e1f26;
+        }
+        footer {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            color: #FFFFFF;
+            font-family: 'Arial', sans-serif;
+        }
+        a {
+            color: #98C1D9;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <footer>
+        <a href="https://www.beautyisapattern.com/archive" target="_blank">Visit Archive</a>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let particles = [];
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            leader = new Leader(width / 2, height / 2);
+            for (let i = 0; i < 30; i++) {
+                particles.push(new Particle(20 * i));
+            }
+        }
+
+        function draw() {
+            background(30);
+            leader.move();
+            leader.display();
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].follow(leader, i);
+                particles[i].display();
+            }
+        }
+
+        class Leader {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.vel = createVector(0, 0);
+                this.acc = createVector(0, 0);
+            }
+
+            move() {
+                let angle = frameCount / 50;
+                this.acc.x = sin(angle) * 0.5;
+                this.acc.y = cos(angle) * 0.5;
+                this.vel.add(this.acc);
+                this.vel.limit(3);
+                this.pos.add(this.vel);
+                this.pos.add(p5.Vector.random2D().mult(0.3));
+            }
+
+            display() {
+                fill('#FF6F61');
+                noStroke();
+                ellipse(this.pos.x, this.pos.y, 30, 30);
+            }
+        }
+
+        class Particle {
+            constructor(offset) {
+                this.acc = createVector(0, 0);
+                this.vel = createVector(0, 0);
+                this.pos = createVector(offset, offset);
+                this.maxSpeed = 4;
+                this.offset = offset;
+            }
+
+            follow(leader, index) {
+                let target = createVector(leader.pos.x, leader.pos.y);
+                target.x += sin((frameCount + index * 5) / 20) * 40;
+                target.y += cos((frameCount + index * 5) / 20) * 40;
+
+                let force = p5.Vector.sub(target, this.pos);
+                let distance = force.mag();
+
+                force.normalize();
+
+                if (distance < 100) {
+                    let speed = map(distance, 0, 100, 0, this.maxSpeed);
+                    force.mult(speed);
+                }
+
+                this.acc.add(force);
+                this.vel.add(this.acc);
+                this.vel.limit(this.maxSpeed);
+                this.pos.add(this.vel);
+                this.acc.mult(0);
+            }
+
+            display() {
+                fill('#c4c4c4');
+                noStroke();
+                ellipse(this.pos.x, this.pos.y, 20, 20);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</body>
+</html>
