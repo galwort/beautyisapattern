@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Dual Nature of Companionship</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #1c1c1c;
+        }
+        .archive-link {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #ffffff;
+            text-decoration: none;
+            font-family: 'Helvetica Neue', sans-serif;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let particles = [];
+        const totalParticles = 100;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < totalParticles; i++) {
+                particles.push(new Particle(random(width), random(height), random(2, 5)));
+            }
+        }
+
+        function draw() {
+            background(28, 28, 28);
+            particles.forEach(particle => {
+                particle.move();
+                particle.display();
+                particle.connect(particles);
+            });
+        }
+
+        class Particle {
+            constructor(x, y, d) {
+                this.x = x;
+                this.y = y;
+                this.diameter = d;
+                this.speedX = random([-1, 1]) * random(1, 3);
+                this.speedY = random([-1, 1]) * random(1, 3);
+            }
+
+            move() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > width || this.x < 0) this.speedX *= -1;
+                if (this.y > height || this.y < 0) this.speedY *= -1;
+            }
+
+            display() {
+                fill(255, 20);
+                noStroke();
+                ellipse(this.x, this.y, this.diameter);
+            }
+
+            connect(otherParticles) {
+                for (let other of otherParticles) {
+                    let distance = dist(this.x, this.y, other.x, other.y);
+                    if (other !== this && distance < 100) {
+                        stroke(255, 50);
+                        line(this.x, this.y, other.x, other.y);
+                    }
+                }
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+
+    <a href="https://www.beautyisapattern.com/archive" class="archive-link">Explore the Archive</a>
+</body>
+</html>

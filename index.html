@@ -3,116 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trail of Guidance</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>The Dual Nature of Companionship</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background: #1e1f26;
+            background-color: #1c1c1c;
         }
-        footer {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            color: #FFFFFF;
-            font-family: 'Arial', sans-serif;
-        }
-        a {
-            color: #98C1D9;
+        .archive-link {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #ffffff;
             text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
+            font-family: 'Helvetica Neue', sans-serif;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
-    <footer>
-        <a href="https://www.beautyisapattern.com/archive" target="_blank">Visit Archive</a>
-    </footer>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
         let particles = [];
+        const totalParticles = 100;
+
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            leader = new Leader(width / 2, height / 2);
-            for (let i = 0; i < 30; i++) {
-                particles.push(new Particle(20 * i));
+            for (let i = 0; i < totalParticles; i++) {
+                particles.push(new Particle(random(width), random(height), random(2, 5)));
             }
         }
 
         function draw() {
-            background(30);
-            leader.move();
-            leader.display();
-
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].follow(leader, i);
-                particles[i].display();
-            }
-        }
-
-        class Leader {
-            constructor(x, y) {
-                this.pos = createVector(x, y);
-                this.vel = createVector(0, 0);
-                this.acc = createVector(0, 0);
-            }
-
-            move() {
-                let angle = frameCount / 50;
-                this.acc.x = sin(angle) * 0.5;
-                this.acc.y = cos(angle) * 0.5;
-                this.vel.add(this.acc);
-                this.vel.limit(3);
-                this.pos.add(this.vel);
-                this.pos.add(p5.Vector.random2D().mult(0.3));
-            }
-
-            display() {
-                fill('#FF6F61');
-                noStroke();
-                ellipse(this.pos.x, this.pos.y, 30, 30);
-            }
+            background(28, 28, 28);
+            particles.forEach(particle => {
+                particle.move();
+                particle.display();
+                particle.connect(particles);
+            });
         }
 
         class Particle {
-            constructor(offset) {
-                this.acc = createVector(0, 0);
-                this.vel = createVector(0, 0);
-                this.pos = createVector(offset, offset);
-                this.maxSpeed = 4;
-                this.offset = offset;
+            constructor(x, y, d) {
+                this.x = x;
+                this.y = y;
+                this.diameter = d;
+                this.speedX = random([-1, 1]) * random(1, 3);
+                this.speedY = random([-1, 1]) * random(1, 3);
             }
 
-            follow(leader, index) {
-                let target = createVector(leader.pos.x, leader.pos.y);
-                target.x += sin((frameCount + index * 5) / 20) * 40;
-                target.y += cos((frameCount + index * 5) / 20) * 40;
-
-                let force = p5.Vector.sub(target, this.pos);
-                let distance = force.mag();
-
-                force.normalize();
-
-                if (distance < 100) {
-                    let speed = map(distance, 0, 100, 0, this.maxSpeed);
-                    force.mult(speed);
-                }
-
-                this.acc.add(force);
-                this.vel.add(this.acc);
-                this.vel.limit(this.maxSpeed);
-                this.pos.add(this.vel);
-                this.acc.mult(0);
+            move() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > width || this.x < 0) this.speedX *= -1;
+                if (this.y > height || this.y < 0) this.speedY *= -1;
             }
 
             display() {
-                fill('#c4c4c4');
+                fill(255, 20);
                 noStroke();
-                ellipse(this.pos.x, this.pos.y, 20, 20);
+                ellipse(this.x, this.y, this.diameter);
+            }
+
+            connect(otherParticles) {
+                for (let other of otherParticles) {
+                    let distance = dist(this.x, this.y, other.x, other.y);
+                    if (other !== this && distance < 100) {
+                        stroke(255, 50);
+                        line(this.x, this.y, other.x, other.y);
+                    }
+                }
             }
         }
 
@@ -120,5 +81,7 @@
             resizeCanvas(windowWidth, windowHeight);
         }
     </script>
+
+    <a href="https://www.beautyisapattern.com/archive" class="archive-link">Explore the Archive</a>
 </body>
 </html>
