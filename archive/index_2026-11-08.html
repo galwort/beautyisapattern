@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Through Time and Pages</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #8892b0, #657695);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #archive-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+            color: #333;
+            text-decoration: none;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #archive-link:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #000;
+        }
+
+    </style>
+</head>
+<body>
+    <a href="https://www.beautyisapattern.com/archive" id="archive-link">Visit the Archive</a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let pages = [];
+        let colors = ['#dde0f6', '#bac4e0', '#94a3cb', '#6b80a6'];
+        let pageCount = 120;
+        
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < pageCount; i++) {
+                pages.push(createPage());
+            }
+            noStroke();
+        }
+
+        function draw() {
+            background(255, 230, 225, 40);  // Soft gradient effect as pages move
+
+            for (let page of pages) {
+                fill(page.color);
+                rect(page.x, page.y, page.w, page.h, 5);
+                page.y += page.speed;
+                page.rotation += page.rotationSpeed;
+
+                if (page.y - page.h > height) {
+                    // Reset the page back to the top
+                    Object.assign(page, createPage(-random(100, 300)));
+                }
+            }
+        }
+
+        function createPage(y = random(height)) {
+            return {
+                x: random(width),
+                y: y,
+                w: random(50, 100),
+                h: random(25, 50),
+                speed: random(2, 6),
+                color: color(random(colors)),
+                rotation: 0,
+                rotationSpeed: random(0.005, 0.02),
+            };
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+
+    </script>
+</body>
+</html>
