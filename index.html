@@ -3,86 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Through Time and Pages</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>Tender Whispers</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background: linear-gradient(to bottom, #8892b0, #657695);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fdf7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-
-        #archive-link {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10;
-            color: #333;
+        a.archive-link {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #606c88;
             text-decoration: none;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: background-color 0.3s, color 0.3s;
+            font-family: 'Georgia', serif;
+            font-size: 14px;
         }
-
-        #archive-link:hover {
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #000;
-        }
-
     </style>
 </head>
 <body>
-    <a href="https://www.beautyisapattern.com/archive" id="archive-link">Visit the Archive</a>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let pages = [];
-        let colors = ['#dde0f6', '#bac4e0', '#94a3cb', '#6b80a6'];
-        let pageCount = 120;
-        
+        let petals = [];
+        const numPetals = 30;
+
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < pageCount; i++) {
-                pages.push(createPage());
+            for (let i = 0; i < numPetals; i++) {
+                petals.push(new Petal(random(width), random(height)));
             }
-            noStroke();
         }
 
         function draw() {
-            background(255, 230, 225, 40);  // Soft gradient effect as pages move
-
-            for (let page of pages) {
-                fill(page.color);
-                rect(page.x, page.y, page.w, page.h, 5);
-                page.y += page.speed;
-                page.rotation += page.rotationSpeed;
-
-                if (page.y - page.h > height) {
-                    // Reset the page back to the top
-                    Object.assign(page, createPage(-random(100, 300)));
-                }
+            background('#fdf7fa');
+            for (let petal of petals) {
+                petal.update();
+                petal.display();
             }
         }
 
-        function createPage(y = random(height)) {
-            return {
-                x: random(width),
-                y: y,
-                w: random(50, 100),
-                h: random(25, 50),
-                speed: random(2, 6),
-                color: color(random(colors)),
-                rotation: 0,
-                rotationSpeed: random(0.005, 0.02),
-            };
+        class Petal {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = random(60, 100);
+                this.angle = random(TWO_PI);
+                this.color = color(random(255), random(153, 204), random(204, 255), 70);
+                this.noiseOffset = random(100);
+            }
+
+            update() {
+                this.angle += 0.01;
+                this.x += sin(this.angle) * 0.5;
+                this.y += (noise(this.noiseOffset) * 2 - 1) * 0.2;
+                this.noiseOffset += 0.005;
+                this.edges();
+            }
+
+            edges() {
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+
+            display() {
+                noStroke();
+                fill(this.color);
+                push();
+                translate(this.x, this.y);
+                rotate(this.angle);
+                ellipse(0, 0, this.size * 0.3, this.size);
+                pop();
+            }
         }
 
         function windowResized() {
             resizeCanvas(windowWidth, windowHeight);
         }
-
     </script>
+    <a class="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
 </body>
 </html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tender Whispers</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #fdf7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        a.archive-link {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #606c88;
+            text-decoration: none;
+            font-family: 'Georgia', serif;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let petals = [];
+        const numPetals = 30;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < numPetals; i++) {
+                petals.push(new Petal(random(width), random(height)));
+            }
+        }
+
+        function draw() {
+            background('#fdf7fa');
+            for (let petal of petals) {
+                petal.update();
+                petal.display();
+            }
+        }
+
+        class Petal {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = random(60, 100);
+                this.angle = random(TWO_PI);
+                this.color = color(random(255), random(153, 204), random(204, 255), 70);
+                this.noiseOffset = random(100);
+            }
+
+            update() {
+                this.angle += 0.01;
+                this.x += sin(this.angle) * 0.5;
+                this.y += (noise(this.noiseOffset) * 2 - 1) * 0.2;
+                this.noiseOffset += 0.005;
+                this.edges();
+            }
+
+            edges() {
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+
+            display() {
+                noStroke();
+                fill(this.color);
+                push();
+                translate(this.x, this.y);
+                rotate(this.angle);
+                ellipse(0, 0, this.size * 0.3, this.size);
+                pop();
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+    <a class="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+</body>
+</html>
