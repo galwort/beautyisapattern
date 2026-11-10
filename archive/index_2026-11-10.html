@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflections of Change</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1e1e1e;
+        }
+        footer {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            color: #ccc;
+        }
+        a {
+            text-decoration: none;
+            color: #e94560;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let angle = 0;
+        let petals = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            noStroke();
+            colors = ['#ff9a9e', '#fad0c4', '#fbc2eb', '#a18cd1', '#fbc2eb'];
+
+            for (let i = 0; i < 8; i++) {
+                petals.push(new Petal(random(colors)));
+            }
+        }
+
+        function draw() {
+            background('#1e1e1e');
+            translate(width / 2, height / 2);
+            for (let petal of petals) {
+                petal.moveAndDisplay();
+            }
+            rotate(angle);
+            fill('#f8f9fa');
+            ellipse(0, 0, 80, 80);
+            angle += 0.005;
+        }
+
+        class Petal {
+            constructor(col) {
+                this.x = random(-200, 200);
+                this.y = random(-200, 200);
+                this.size = random(30, 50);
+                this.color = col;
+            }
+
+            moveAndDisplay() {
+                fill(this.color);
+                push();
+                rotate(angle + this.x * TWO_PI / 400);
+                ellipse(this.x, this.y, this.size, this.size * 1.5);
+                pop();
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</head>
+<body>
+    <footer>
+        <a href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+    </footer>
+</body>
+</html>
