@@ -3,80 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reflections of Change</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <title>Reflections of Growth</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #1e1e1e;
+            margin: 0;
+            overflow: hidden;
+            background-color: #f1f1f1;
         }
-        footer {
+        a.archive-link {
             position: fixed;
             bottom: 10px;
-            width: 100%;
-            text-align: center;
-            color: #ccc;
-        }
-        a {
+            right: 10px;
+            color: #333;
             text-decoration: none;
-            color: #e94560;
+            font-family: Arial, sans-serif;
+        }
+        a.archive-link:hover {
+            text-decoration: underline;
         }
     </style>
+</head>
+<body>
+    <a href="https://www.beautyisapattern.com/archive" class="archive-link">Explore the Archive</a>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let angle = 0;
-        let petals = [];
+        let lines = [];
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            noStroke();
-            colors = ['#ff9a9e', '#fad0c4', '#fbc2eb', '#a18cd1', '#fbc2eb'];
-
-            for (let i = 0; i < 8; i++) {
-                petals.push(new Petal(random(colors)));
+            background(241);
+            strokeWeight(2);
+            for (let i = 0; i < 50; i++) {
+                lines.push(new AnimatedLine());
             }
         }
 
         function draw() {
-            background('#1e1e1e');
-            translate(width / 2, height / 2);
-            for (let petal of petals) {
-                petal.moveAndDisplay();
-            }
-            rotate(angle);
-            fill('#f8f9fa');
-            ellipse(0, 0, 80, 80);
-            angle += 0.005;
-        }
+            background(241, 10); // Lightly fade the background
 
-        class Petal {
-            constructor(col) {
-                this.x = random(-200, 200);
-                this.y = random(-200, 200);
-                this.size = random(30, 50);
-                this.color = col;
-            }
-
-            moveAndDisplay() {
-                fill(this.color);
-                push();
-                rotate(angle + this.x * TWO_PI / 400);
-                ellipse(this.x, this.y, this.size, this.size * 1.5);
-                pop();
+            for (let line of lines) {
+                line.update();
+                line.display();
             }
         }
 
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
+        class AnimatedLine {
+            constructor() {
+                this.x1 = random(width);
+                this.y1 = random(height);
+                this.x2 = this.x1 + random(-100, 100);
+                this.y2 = this.y1 + random(-100, 100);
+                this.speed = random(0.5, 2);
+                this.color = color(random(100, 255), random(100, 255), random(100, 255), 150);
+                this.direction = random(TWO_PI);
+            }
+
+            update() {
+                this.x1 += this.speed * cos(this.direction);
+                this.y1 += this.speed * sin(this.direction);
+                this.x2 += this.speed * cos(this.direction);
+                this.y2 += this.speed * sin(this.direction);
+
+                // Check boundaries
+                if (this.x1 < 0 || this.x1 > width || this.y1 < 0 || this.y1 > height) {
+                    this.reset();
+                }
+            }
+
+            display() {
+                stroke(this.color);
+                line(this.x1, this.y1, this.x2, this.y2);
+            }
+
+            reset() {
+                this.x1 = random(width);
+                this.y1 = random(height);
+                this.x2 = this.x1 + random(-100, 100);
+                this.y2 = this.y1 + random(-100, 100);
+                this.direction = random(TWO_PI);
+                this.color = color(random(100, 255), random(100, 255), random(100, 255), 150);
+            }
         }
+
     </script>
-</head>
-<body>
-    <footer>
-        <a href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
-    </footer>
 </body>
 </html>
