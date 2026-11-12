@@ -1,92 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reflections of Growth</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>The Art of Silence</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #f1f1f1;
+            background-color: #1e1e1e;
         }
-        a.archive-link {
-            position: fixed;
+
+        a {
+            position: absolute;
             bottom: 10px;
             right: 10px;
-            color: #333;
+            color: #c7c7c7;
             text-decoration: none;
-            font-family: Arial, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            transition: color 0.3s ease;
         }
-        a.archive-link:hover {
-            text-decoration: underline;
+
+        a:hover {
+            color: #ffffff;
         }
     </style>
 </head>
-<body>
-    <a href="https://www.beautyisapattern.com/archive" class="archive-link">Explore the Archive</a>
 
+<body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let lines = [];
+        let arcDiameter;
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            background(241);
-            strokeWeight(2);
-            for (let i = 0; i < 50; i++) {
-                lines.push(new AnimatedLine());
-            }
+            arcDiameter = 50;
+            angleMode(DEGREES);
         }
 
         function draw() {
-            background(241, 10); // Lightly fade the background
+            background(30, 30, 30, 25);
+            fill(255);
+            noStroke();
 
-            for (let line of lines) {
-                line.update();
-                line.display();
+            let maxDiameter = map(sin(frameCount * 0.5), -1, 1, 25, 100);
+            for (let i = 0; i < width + 100; i += 100) {
+                let phase = map(i, 0, width, 0, 360);
+                let diameter = map(
+                    sin(frameCount * 0.5 + phase),
+                    -1,
+                    1,
+                    arcDiameter,
+                    maxDiameter
+                );
+                arc(i, height / 2, diameter, diameter, 0, 180);
             }
         }
 
-        class AnimatedLine {
-            constructor() {
-                this.x1 = random(width);
-                this.y1 = random(height);
-                this.x2 = this.x1 + random(-100, 100);
-                this.y2 = this.y1 + random(-100, 100);
-                this.speed = random(0.5, 2);
-                this.color = color(random(100, 255), random(100, 255), random(100, 255), 150);
-                this.direction = random(TWO_PI);
-            }
-
-            update() {
-                this.x1 += this.speed * cos(this.direction);
-                this.y1 += this.speed * sin(this.direction);
-                this.x2 += this.speed * cos(this.direction);
-                this.y2 += this.speed * sin(this.direction);
-
-                // Check boundaries
-                if (this.x1 < 0 || this.x1 > width || this.y1 < 0 || this.y1 > height) {
-                    this.reset();
-                }
-            }
-
-            display() {
-                stroke(this.color);
-                line(this.x1, this.y1, this.x2, this.y2);
-            }
-
-            reset() {
-                this.x1 = random(width);
-                this.y1 = random(height);
-                this.x2 = this.x1 + random(-100, 100);
-                this.y2 = this.y1 + random(-100, 100);
-                this.direction = random(TWO_PI);
-                this.color = color(random(100, 255), random(100, 255), random(100, 255), 150);
-            }
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
         }
-
     </script>
+    <a href="https://www.beautyisapattern.com/archive">View Archive</a>
 </body>
+
 </html>

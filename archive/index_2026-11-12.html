@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Art of Silence</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #1e1e1e;
+        }
+
+        a {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #c7c7c7;
+            text-decoration: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let arcDiameter;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            arcDiameter = 50;
+            angleMode(DEGREES);
+        }
+
+        function draw() {
+            background(30, 30, 30, 25);
+            fill(255);
+            noStroke();
+
+            let maxDiameter = map(sin(frameCount * 0.5), -1, 1, 25, 100);
+            for (let i = 0; i < width + 100; i += 100) {
+                let phase = map(i, 0, width, 0, 360);
+                let diameter = map(
+                    sin(frameCount * 0.5 + phase),
+                    -1,
+                    1,
+                    arcDiameter,
+                    maxDiameter
+                );
+                arc(i, height / 2, diameter, diameter, 0, 180);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+    <a href="https://www.beautyisapattern.com/archive">View Archive</a>
+</body>
+
+</html>
