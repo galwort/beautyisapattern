@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhythms of Abundance</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body { margin: 0; overflow: hidden; background: #87CEEB; }
+        a {
+            position: absolute; 
+            bottom: 10px; 
+            right: 10px; 
+            font-size: 16px;
+            color: #2f4f4f;
+            text-decoration: none;
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+
+</head>
+<body>
+    <a href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Archive</a>
+    
+    <script>
+        let particles = [];
+        let maxParticles = 50;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < maxParticles; i++) {
+                particles.push(new Particle(random(width), random(height / 2)));
+            }
+        }
+
+        function draw() {
+            background(135, 206, 235);
+            drawGround();
+            for (let p of particles) {
+                p.move();
+                p.display();
+                p.checkEdges();
+            }
+        }
+
+        function drawGround() {
+            fill(34, 139, 34);
+            rect(0, height / 2, width, height / 2);
+            noFill();
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.position = createVector(x, y);
+                this.size = random(5, 15);
+                this.growing = true;
+            }
+
+            move() {
+                if (this.growing) {
+                    this.size += 0.1;
+                    if (this.size > 60) {
+                        this.growing = false;
+                    }
+                } else {
+                    this.size -= 0.1;
+                    if (this.size < 5) {
+                        this.growing = true;
+                    }
+                }
+                this.position.y += map(noise(this.position.x * 0.01, this.position.y * 0.01), 0, 1, -0.5, 0.5);
+            }
+
+            display() {
+                fill(255, 215, 0, 180);
+                ellipse(this.position.x, this.position.y + (height / 2), this.size);
+            }
+
+            checkEdges() {
+                if (this.position.x > width) this.position.x = 0;
+                if (this.position.x < 0) this.position.x = width;
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</body>
+</html>
