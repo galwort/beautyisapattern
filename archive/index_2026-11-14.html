@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity in Motion</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f0f8ff; /* Alice Blue background */
+        }
+        .link {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: #eef;
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .link:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+<script>
+    let particles = [];
+    const numParticles = 100;
+
+    function setup() {
+        createCanvas(windowWidth, windowHeight);
+        for(let i = 0; i < numParticles; i++) {
+            particles.push(new Particle(random(width), random(height)));
+        }
+    }
+
+    function draw() {
+        background(230, 245, 255, 100); // Soft blue overlay
+        for (let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            p.update();
+            p.display();
+            p.connect(particles);
+        }
+    }
+
+    class Particle {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.r = random(4, 8);
+            this.xSpeed = random(-0.5, 0.5);
+            this.ySpeed = random(-0.5, 0.5);
+            this.connections = 0;
+        }
+
+        update() {
+            this.x += this.xSpeed;
+            this.y += this.ySpeed;
+            if (this.x > width || this.x < 0) {
+                this.xSpeed *= -1;
+            }
+            if (this.y > height || this.y < 0) {
+                this.ySpeed *= -1;
+            }
+        }
+
+        display() {
+            fill(70, 130, 180, map(this.connections, 0, 10, 50, 200)); // Light Steel Blue
+            noStroke();
+            ellipse(this.x, this.y, this.r * 2);
+        }
+
+        connect(others) {
+            this.connections = 0;
+            others.forEach(other => {
+                if (this !== other && this.isClose(other, 120)) {
+                    this.connections++;
+                    stroke(135, 206, 250, 100); // Light Sky Blue for lines
+                    line(this.x, this.y, other.x, other.y);
+                }
+            });
+        }
+
+        isClose(other, maxDist) {
+            let d = dist(this.x, this.y, other.x, other.y);
+            return d < maxDist && random() > d / maxDist; // Random chance for line thickness
+        }
+    }
+</script>
+<a class="link" href="https://www.beautyisapattern.com/archive">View Archive</a>
+</body>
+</html>
