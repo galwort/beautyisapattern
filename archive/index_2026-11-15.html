@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>Pathways in the Cosmos</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        .archive-link {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .archive-link:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+<script>
+    let stars = [];
+    let numStars = 100;
+
+    function setup() {
+        createCanvas(windowWidth, windowHeight);
+        for (let i = 0; i < numStars; i++) {
+            stars.push(new Star());
+        }
+    }
+
+    function draw() {
+        background(0);
+        translate(width / 2, height / 2);
+
+        stars.forEach(star => {
+            star.update();
+            star.show();
+        });
+    }
+
+    class Star {
+        constructor() {
+            this.init();
+        }
+
+        init() {
+            this.x = random(-width, width);
+            this.y = random(-height, height);
+            this.z = random(width/2);
+            this.pz = this.z;
+        }
+
+        update() {
+            this.z -= 5;
+            if (this.z < 1) {
+                this.init();
+            }
+        }
+
+        show() {
+            fill(255);
+            noStroke();
+            let sx = map(this.x / this.z, 0, 1, 0, width);
+            let sy = map(this.y / this.z, 0, 1, 0, height);
+            let r = map(this.z, 0, width/2, 8, 0);
+            ellipse(sx, sy, r, r);
+
+            let px = map(this.x / this.pz, 0, 1, 0, width);
+            let py = map(this.y / this.pz, 0, 1, 0, height);
+            this.pz = this.z;
+
+            stroke(255, 150);
+            line(px, py, sx, sy);
+        }
+    }
+
+    function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+    }
+</script>
+
+<a href="https://www.beautyisapattern.com/archive" class="archive-link">Visit the Archive</a>
+</body>
+</html>
