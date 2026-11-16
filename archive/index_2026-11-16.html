@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cycles of Progress</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0d0b12;
+            font-family: Arial, sans-serif;
+        }
+
+        #archive-link {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+        
+        #archive-link:hover {
+            color: #cccccc;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let colors;
+        let angle = 0;
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            colors = [
+                color('#ff6b6b'),
+                color('#5f27cd'),
+                color('#48dbfb'),
+                color('#1dd1a1'),
+                color('#feca57'),
+                color('#ff9f43')
+            ];
+            strokeWeight(2);
+            noFill();
+        }
+
+        function draw() {
+            background(0, 20);
+
+            translate(width / 2, height / 2);
+
+            for (let i = 0; i < 6; i++) {
+                stroke(colors[i]);
+                push();
+                rotate(TWO_PI * i / 6 + angle);
+                let scaleVal = sin(angle + i) * 200 + 400;
+                drawGear(0, 0, scaleVal, 20);
+                pop();
+            }
+
+            angle -= 0.01;
+        }
+
+        function drawGear(x, y, size, teeth) {
+            beginShape();
+            for (let i = 0; i < TWO_PI; i += TWO_PI / teeth) {
+                let radius = i % 0.2 < 0.1 ? size * 0.85 : size;
+                let xVertex = x + cos(i) * radius;
+                let yVertex = y + sin(i) * radius;
+                vertex(xVertex, yVertex);
+            }
+            endShape(CLOSE);
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</head>
+<body>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
+</body>
+</html>
