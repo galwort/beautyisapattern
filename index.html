@@ -3,86 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cycles of Progress</title>
     <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <title>Shimmer of Tenacity</title>
     <style>
-        body {
+        body, html {
             margin: 0;
+            padding: 0;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #0d0b12;
-            font-family: Arial, sans-serif;
+            background-color: #0d0d0d;
         }
-
         #archive-link {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            color: #ffffff;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: #76ead7;
             text-decoration: none;
-            font-size: 1rem;
-            transition: color 0.3s;
-        }
-        
-        #archive-link:hover {
-            color: #cccccc;
+            font-size: 14px;
+            font-family: 'Courier New', Courier, monospace;
         }
     </style>
+</head>
+<body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let colors;
-        let angle = 0;
+        let attempts = [];
+        let successLight;
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            colors = [
-                color('#ff6b6b'),
-                color('#5f27cd'),
-                color('#48dbfb'),
-                color('#1dd1a1'),
-                color('#feca57'),
-                color('#ff9f43')
-            ];
-            strokeWeight(2);
-            noFill();
+            for (let i = 0; i < 100; i++) {
+                let x = random(width);
+                let y = random(height);
+                attempts.push(new Attempt(x, y));
+            }
+            successLight = new SuccessLight(width / 2, height / 2);
         }
 
         function draw() {
-            background(0, 20);
-
-            translate(width / 2, height / 2);
-
-            for (let i = 0; i < 6; i++) {
-                stroke(colors[i]);
-                push();
-                rotate(TWO_PI * i / 6 + angle);
-                let scaleVal = sin(angle + i) * 200 + 400;
-                drawGear(0, 0, scaleVal, 20);
-                pop();
+            background(13);
+            for (let attempt of attempts) {
+                attempt.update();
+                attempt.display();
             }
-
-            angle -= 0.01;
+            successLight.update();
+            successLight.display();
         }
 
-        function drawGear(x, y, size, teeth) {
-            beginShape();
-            for (let i = 0; i < TWO_PI; i += TWO_PI / teeth) {
-                let radius = i % 0.2 < 0.1 ? size * 0.85 : size;
-                let xVertex = x + cos(i) * radius;
-                let yVertex = y + sin(i) * radius;
-                vertex(xVertex, yVertex);
+        class Attempt {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = random(3, 10);
+                this.alpha = random(50, 100);
             }
-            endShape(CLOSE);
+
+            update() {
+                this.x += random(-1, 1);
+                this.y += random(-1, 1);
+
+                if (random() > 0.995) {
+                    this.alpha = random(50, 255);
+                }
+            }
+
+            display() {
+                noStroke();
+                fill(150, 30, 30, this.alpha);
+                ellipse(this.x, this.y, this.size);
+            }
+        }
+
+        class SuccessLight {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = 50;
+                this.brightness = 0;
+            }
+
+            update() {
+                if (random() < 0.02) {
+                    this.brightness = 255;
+                }
+                this.brightness *= 0.95;
+            }
+
+            display() {
+                noStroke();
+                fill(255, 255, 0, this.brightness);
+                ellipse(this.x, this.y, this.size);
+            }
         }
 
         function windowResized() {
             resizeCanvas(windowWidth, windowHeight);
         }
     </script>
-</head>
-<body>
-    <a id="archive-link" href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Visit Archive</a>
 </body>
 </html>
