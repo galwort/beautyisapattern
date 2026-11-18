@@ -3,95 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
-    <title>Shimmer of Tenacity</title>
+    <title>World Within a World</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
     <style>
-        body, html {
+        body {
             margin: 0;
-            padding: 0;
             overflow: hidden;
-            background-color: #0d0d0d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
         }
-        #archive-link {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            color: #76ead7;
+        a {
+            position: absolute;
+            bottom: 20px;
+            color: #ffffff;
             text-decoration: none;
             font-size: 14px;
-            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let attempts = [];
-        let successLight;
+        let particles = [];
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < 100; i++) {
-                let x = random(width);
-                let y = random(height);
-                attempts.push(new Attempt(x, y));
+            pixelDensity(1);
+            noStroke();
+            for (let i = 0; i < 200; i++) {
+                particles.push(new Particle(random(width), random(height), i));
             }
-            successLight = new SuccessLight(width / 2, height / 2);
         }
 
         function draw() {
-            background(13);
-            for (let attempt of attempts) {
-                attempt.update();
-                attempt.display();
-            }
-            successLight.update();
-            successLight.display();
-        }
-
-        class Attempt {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.size = random(3, 10);
-                this.alpha = random(50, 100);
-            }
-
-            update() {
-                this.x += random(-1, 1);
-                this.y += random(-1, 1);
-
-                if (random() > 0.995) {
-                    this.alpha = random(50, 255);
-                }
-            }
-
-            display() {
-                noStroke();
-                fill(150, 30, 30, this.alpha);
-                ellipse(this.x, this.y, this.size);
+            background(0, 20);
+            for (let particle of particles) {
+                particle.move();
+                particle.connect(particles);
+                particle.show();
             }
         }
 
-        class SuccessLight {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.size = 50;
-                this.brightness = 0;
+        class Particle {
+            constructor(x, y, index) {
+                this.pos = createVector(x, y);
+                this.vel = p5.Vector.random2D();
+                this.acc = createVector();
+                this.color = color(random(150, 255), random(150, 255), random(150, 255));
+                this.r = random(1, 4);
+                this.index = index;
             }
 
-            update() {
-                if (random() < 0.02) {
-                    this.brightness = 255;
+            move() {
+                let noiseForce = noise(this.index * 0.01 + frameCount * 0.01) * TWO_PI * 2;
+                this.acc = p5.Vector.fromAngle(noiseForce);
+                this.vel.add(this.acc);
+                this.vel.limit(2);
+                this.pos.add(this.vel);
+                this.pos.x = (this.pos.x + width) % width;
+                this.pos.y = (this.pos.y + height) % height;
+            }
+
+            connect(particles) {
+                for (let other of particles) {
+                    if (other !== this) {
+                        let d = dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
+                        if (d < 50) {
+                            stroke(255, map(d, 0, 50, 255, 100));
+                            line(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
+                        }
+                    }
                 }
-                this.brightness *= 0.95;
             }
 
-            display() {
-                noStroke();
-                fill(255, 255, 0, this.brightness);
-                ellipse(this.x, this.y, this.size);
+            show() {
+                fill(this.color);
+                ellipse(this.pos.x, this.pos.y, this.r * 2);
             }
         }
 
@@ -99,6 +93,8 @@
             resizeCanvas(windowWidth, windowHeight);
         }
     </script>
-    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Visit Archive</a>
+
+    <a href="https://www.beautyisapattern.com/archive">Visit the Archive</a>
+
 </body>
 </html>
