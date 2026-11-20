@@ -3,64 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Journey Through Now and Then</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon" />
+    <title>Concept Genesis</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #111;
+            background-color: #050505;
         }
-        .archive-link {
+        #archive-link {
             position: absolute;
             bottom: 10px;
             right: 10px;
-            color: #efefef;
+            color: #f0f0f0;
             text-decoration: none;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
-        .archive-link:hover {
-            opacity: 1;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
     <script>
+        let originX, originY;
+        
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            noStroke();
+            originX = width / 2;
+            originY = height / 2;
+            angleMode(DEGREES);
         }
 
         function draw() {
-            background(17, 17, 34);
-            translate(width / 2, height / 2);
-            let totalCirc = 6;
-            let time = millis() / 1000;
-            
-            for (let i = 0; i < 360; i += 36) {
-                let angle = radians(i + (time * 20) % 360);
-                let size = map(sin(time + i), -1, 1, 80, 150);
+            background(5, 5, 5, 100);
 
-                let x = cos(angle) * (200 + 50 * cos(time));
-                let y = sin(angle) * (200 + 50 * sin(time));
+            translate(originX, originY);
+            rotate(frameCount / 2);
 
-                let r = map(sin(angle + time), -1, 1, 150, 255);
-                let g = map(cos(angle + time), -1, 1, 70, 200);
-                let b = map(sin(2 * angle + time), -1, 1, 150, 255);
-
-                fill(r, g, b, 180);
-                ellipse(x, y, size, size);
+            for (let r = 0; r < 360; r += 15) {
+                let radius = map(sin(frameCount + r), -1, 1, 50, 150);
+                let x = radius * cos(r);
+                let y = radius * sin(r);
+                
+                drawParticle(x, y);
             }
         }
 
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
+        function drawParticle(x, y) {
+            noStroke();
+            fill(180 + x % 255, 50 + y % 105, 205 + y % 45);
+            ellipse(x, y, 5, 5);
         }
     </script>
-    <a class="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
 </body>
 </html>

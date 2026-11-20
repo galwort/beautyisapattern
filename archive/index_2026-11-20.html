@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concept Genesis</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050505;
+        }
+        #archive-link {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #f0f0f0;
+            text-decoration: none;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
+    <script>
+        let originX, originY;
+        
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            originX = width / 2;
+            originY = height / 2;
+            angleMode(DEGREES);
+        }
+
+        function draw() {
+            background(5, 5, 5, 100);
+
+            translate(originX, originY);
+            rotate(frameCount / 2);
+
+            for (let r = 0; r < 360; r += 15) {
+                let radius = map(sin(frameCount + r), -1, 1, 50, 150);
+                let x = radius * cos(r);
+                let y = radius * sin(r);
+                
+                drawParticle(x, y);
+            }
+        }
+
+        function drawParticle(x, y) {
+            noStroke();
+            fill(180 + x % 255, 50 + y % 105, 205 + y % 45);
+            ellipse(x, y, 5, 5);
+        }
+    </script>
+</body>
+</html>
