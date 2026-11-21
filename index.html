@@ -3,60 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Concept Genesis</title>
+    <title>Flowing Tranquility</title>
     <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: #050505;
-        }
-        #archive-link {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            color: #f0f0f0;
-            text-decoration: none;
-            font-family: "Helvetica Neue", Arial, sans-serif;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 5px 10px;
-            border-radius: 4px;
-        }
+      body {
+          margin: 0;
+          overflow: hidden;
+          background-color: #1a1a1a;
+      }
+      a {
+          position: absolute;
+          bottom: 10px;
+          right: 10px;
+          color: #ccc;
+          text-decoration: none;
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+          transition: color 0.3s ease;
+      }
+      a:hover {
+          color: #ffffff;
+      }
     </style>
 </head>
 <body>
-    <a id="archive-link" href="https://www.beautyisapattern.com/archive">Explore the Archive</a>
-    <script>
-        let originX, originY;
-        
-        function setup() {
-            createCanvas(windowWidth, windowHeight);
-            originX = width / 2;
-            originY = height / 2;
-            angleMode(DEGREES);
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+<script>
+    let particleSystem;
+
+    function setup() {
+        createCanvas(windowWidth, windowHeight);
+        particleSystem = new ParticleSystem();
+    }
+
+    function draw() {
+        background(26, 26, 26, 40);
+        particleSystem.run();
+    }
+
+    // Particle class
+    class Particle {
+        constructor(position) {
+            this.position = position.copy();
+            this.velocity = createVector(random(-1, 1), random(-1, 1));
+            this.acceleration = createVector(0, 0);
+            this.lifespan = 255;
+            this.size = random(3, 7);
         }
 
-        function draw() {
-            background(5, 5, 5, 100);
-
-            translate(originX, originY);
-            rotate(frameCount / 2);
-
-            for (let r = 0; r < 360; r += 15) {
-                let radius = map(sin(frameCount + r), -1, 1, 50, 150);
-                let x = radius * cos(r);
-                let y = radius * sin(r);
-                
-                drawParticle(x, y);
-            }
+        run() {
+            this.update();
+            this.display();
         }
 
-        function drawParticle(x, y) {
+        update() {
+            this.velocity.add(this.acceleration);
+            this.position.add(this.velocity);
+            this.acceleration.mult(0);
+            this.lifespan -= 2;
+        }
+
+        display() {
             noStroke();
-            fill(180 + x % 255, 50 + y % 105, 205 + y % 45);
-            ellipse(x, y, 5, 5);
+            fill(255, this.lifespan);
+            ellipse(this.position.x, this.position.y, this.size);
         }
-    </script>
+
+        isDead() {
+            return this.lifespan < 0;
+        }
+    }
+
+    // Particle System class
+    class ParticleSystem {
+        constructor() {
+            this.particles = [];
+        }
+
+        addParticle(position) {
+            this.particles.push(new Particle(position || createVector(width / 2, height / 2)));
+        }
+
+        run() {
+            for (let i = this.particles.length - 1; i >= 0; i--) {
+                let p = this.particles[i];
+                p.run();
+                if (p.isDead()) {
+                    this.particles.splice(i, 1);
+                }
+            }
+
+            // Add a new particle at each frame
+            this.addParticle();
+        }
+    }
+</script>
+
+<a href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Archive</a>
+
 </body>
 </html>

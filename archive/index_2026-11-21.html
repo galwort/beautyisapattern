@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowing Tranquility</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <style>
+      body {
+          margin: 0;
+          overflow: hidden;
+          background-color: #1a1a1a;
+      }
+      a {
+          position: absolute;
+          bottom: 10px;
+          right: 10px;
+          color: #ccc;
+          text-decoration: none;
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+          transition: color 0.3s ease;
+      }
+      a:hover {
+          color: #ffffff;
+      }
+    </style>
+</head>
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+<script>
+    let particleSystem;
+
+    function setup() {
+        createCanvas(windowWidth, windowHeight);
+        particleSystem = new ParticleSystem();
+    }
+
+    function draw() {
+        background(26, 26, 26, 40);
+        particleSystem.run();
+    }
+
+    // Particle class
+    class Particle {
+        constructor(position) {
+            this.position = position.copy();
+            this.velocity = createVector(random(-1, 1), random(-1, 1));
+            this.acceleration = createVector(0, 0);
+            this.lifespan = 255;
+            this.size = random(3, 7);
+        }
+
+        run() {
+            this.update();
+            this.display();
+        }
+
+        update() {
+            this.velocity.add(this.acceleration);
+            this.position.add(this.velocity);
+            this.acceleration.mult(0);
+            this.lifespan -= 2;
+        }
+
+        display() {
+            noStroke();
+            fill(255, this.lifespan);
+            ellipse(this.position.x, this.position.y, this.size);
+        }
+
+        isDead() {
+            return this.lifespan < 0;
+        }
+    }
+
+    // Particle System class
+    class ParticleSystem {
+        constructor() {
+            this.particles = [];
+        }
+
+        addParticle(position) {
+            this.particles.push(new Particle(position || createVector(width / 2, height / 2)));
+        }
+
+        run() {
+            for (let i = this.particles.length - 1; i >= 0; i--) {
+                let p = this.particles[i];
+                p.run();
+                if (p.isDead()) {
+                    this.particles.splice(i, 1);
+                }
+            }
+
+            // Add a new particle at each frame
+            this.addParticle();
+        }
+    }
+</script>
+
+<a href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Archive</a>
+
+</body>
+</html>
