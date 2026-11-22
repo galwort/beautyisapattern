@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Harmony of Technology</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #a8dadc, #457b9d);
+        }
+        a {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #f1faee;
+            text-decoration: none;
+            font-family: 'Arial', sans-serif;
+            background: rgba(39, 55, 70, 0.7);
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+        a:hover {
+            background: rgba(39, 55, 70, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <a href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Archive</a>
+    <script>
+        let particles = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function draw() {
+            background(20, 34, 44, 25);
+            for (let particle of particles) {
+                particle.update();
+                particle.display();
+            }
+        }
+
+        // Particle class
+        class Particle {
+            constructor() {
+                this.position = createVector(random(width), random(height));
+                this.velocity = createVector(random(-1, 1), random(-1, 1));
+                this.size = random(4, 20);
+                this.color = random([color(255, 204, 204), color(204, 229, 255), color(153, 204, 255)]);
+            }
+
+            update() {
+                this.position.add(this.velocity);
+                // Bounce from the borders
+                if (this.position.x > width || this.position.x < 0) {
+                    this.velocity.x *= -1;
+                }
+                if (this.position.y > height || this.position.y < 0) {
+                    this.velocity.y *= -1;
+                }
+            }
+
+            display() {
+                noStroke();
+                fill(this.color, 180);
+                ellipse(this.position.x, this.position.y, this.size, this.size);
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</body>
+</html>
