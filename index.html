@@ -3,83 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Harmony of Technology</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <title>A Gift of a Smile</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background: linear-gradient(to bottom, #a8dadc, #457b9d);
+            background-color: #fdf7f2;
         }
-        a {
-            position: absolute;
+        #archive {
+            position: fixed;
             bottom: 10px;
             right: 10px;
-            color: #f1faee;
+            color: #7A6C5D;
             text-decoration: none;
-            font-family: 'Arial', sans-serif;
-            background: rgba(39, 55, 70, 0.7);
-            padding: 8px 12px;
-            border-radius: 10px;
-            transition: background 0.3s ease;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
         }
-        a:hover {
-            background: rgba(39, 55, 70, 0.9);
+        #archive:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <a href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Archive</a>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
     <script>
-        let particles = [];
+        let smileColors = ['#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF', '#A0C4FF', '#BDB2FF', '#FFC6FF'];
+        let smile = [];
 
         function setup() {
             createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < 100; i++) {
-                particles.push(new Particle());
+            for (let i = 0; i < 8; i++) {
+                smile.push(new Smile(random(width), random(height), random(smileColors)));
             }
         }
 
         function draw() {
-            background(20, 34, 44, 25);
-            for (let particle of particles) {
-                particle.update();
-                particle.display();
+            clear();
+            background('#fdf7f2');
+            for (let s of smile) {
+                s.move();
+                s.display();
             }
         }
 
-        // Particle class
-        class Particle {
-            constructor() {
-                this.position = createVector(random(width), random(height));
-                this.velocity = createVector(random(-1, 1), random(-1, 1));
-                this.size = random(4, 20);
-                this.color = random([color(255, 204, 204), color(204, 229, 255), color(153, 204, 255)]);
+        class Smile {
+            constructor(x, y, c) {
+                this.x = x;
+                this.y = y;
+                this.color = c;
+                this.size = random(30, 60);
+                this.xSpeed = random(1, 4) * (random() < 0.5 ? 1 : -1);
+                this.ySpeed = random(1, 4) * (random() < 0.5 ? 1 : -1);
             }
 
-            update() {
-                this.position.add(this.velocity);
-                // Bounce from the borders
-                if (this.position.x > width || this.position.x < 0) {
-                    this.velocity.x *= -1;
-                }
-                if (this.position.y > height || this.position.y < 0) {
-                    this.velocity.y *= -1;
-                }
+            move() {
+                this.x += this.xSpeed;
+                this.y += this.ySpeed;
+
+                if (this.x < 0 || this.x > width) this.xSpeed *= -1;
+                if (this.y < 0 || this.y > height) this.ySpeed *= -1;
             }
 
             display() {
+                // Draw smiling face
+                fill(this.color);
                 noStroke();
-                fill(this.color, 180);
-                ellipse(this.position.x, this.position.y, this.size, this.size);
+                ellipse(this.x, this.y, this.size);
+                fill('#332c2a');
+                ellipse(this.x - this.size / 4, this.y - this.size / 5, this.size / 5, this.size / 6);
+                ellipse(this.x + this.size / 4, this.y - this.size / 5, this.size / 5, this.size / 6);
+                noFill();
+                stroke('#332c2a');
+                strokeWeight(2);
+                arc(this.x, this.y, this.size / 2, this.size / 2, 0, PI);
             }
         }
-
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
     </script>
+
+    <a id="archive" href="https://www.beautyisapattern.com/archive">Explore the Beauty Archive</a>
 </body>
 </html>
