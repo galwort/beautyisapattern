@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <title>Harmony of Grateful Wealth</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #2E2E2E, #1B1464);
+            height: 100vh;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            color: #FFF;
+        }
+
+        footer a {
+            color: #F39C12;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        let particles = [];
+
+        class Particle {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.vel = createVector(random(-2, 2), random(-2, 2));
+                this.accel = createVector(0, 0.05);
+                this.size = random(5, 15);
+                this.color = color(random(170, 255), random(120, 180), random(200, 255));
+            }
+
+            update() {
+                this.vel.add(this.accel);
+                this.pos.add(this.vel);
+                this.edges();
+            }
+
+            edges() {
+                if (this.pos.y > height || this.pos.y < 0) {
+                    this.vel.y *= -1;
+                }
+                if (this.pos.x > width || this.pos.x < 0) {
+                    this.vel.x *= -1;
+                }
+            }
+
+            show() {
+                noStroke();
+                fill(this.color);
+                circle(this.pos.x, this.pos.y, this.size);
+            }
+        }
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for(let i = 0; i < 100; i++) {
+                particles.push(new Particle(random(width), random(height)));
+            }
+        }
+
+        function draw() {
+            // Semi-transparent background for trailing effect
+            background(27, 20, 100, 25);
+            for(let particle of particles) {
+                particle.update();
+                particle.show();
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+    <footer>
+        <a href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
+    </footer>
+</body>
+</html>
