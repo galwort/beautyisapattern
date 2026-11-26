@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embracing Harmony</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f5f7fa;
+        }
+
+        .archive {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .archive a {
+            color: #67b7e6;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .archive a:hover {
+            color: #4f98d3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="archive">
+    <a href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
+</div>
+
+<script>
+    let petalCount = 10;
+    let angle = 0;
+    
+    function setup() {
+        createCanvas(windowWidth, windowHeight);
+        angleMode(DEGREES);
+    }
+
+    function draw() {
+        background('#f5f7fa');
+        translate(width / 2, height / 2);
+        noStroke();
+
+        // Drawing blooming flower
+        for (let i = 0; i < petalCount; i++) {
+            const hue = lerpColor(color('#ff6f69'), color('#ffcc5c'), i / petalCount);
+            fill(hue);
+            push();
+            rotate(angle + (360 / petalCount) * i);
+            ellipse(70, 0, 100, 50);
+            pop();
+        }
+
+        // Draw smiling face
+        fill('#ffdb9b');
+        ellipse(0, 0, 150, 150);
+
+        // Eyes
+        fill('#fff');
+        ellipse(-25, -20, 20, 26);
+        ellipse(25, -20, 20, 26);
+
+        fill('#000');
+        ellipse(-25, -20, 10, 10);
+        ellipse(25, -20, 10, 10);
+
+        // Mouth
+        noFill();
+        stroke('#000');
+        strokeWeight(4);
+        arc(0, 15, 60, 40, 0, 180);
+
+        angle += 0.5; // Adjust the rotation speed of petals
+    }
+
+    function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+    }
+</script>
+
+</body>
+</html>

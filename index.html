@@ -3,99 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embrace the Good</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.min.js"></script>
+    <title>Embracing Harmony</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        body, html { margin: 0; padding: 0; overflow: hidden; }
-        body { background-color: #e6efff; }
-        .link-container {
-            position: absolute;
-            top: 90%;
-            right: 5%;
-            text-align: center;
+        body, html {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f5f7fa;
         }
-        .archive-link {
-            text-decoration: none;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 15px;
+
+        .archive {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-family: Arial, sans-serif;
             color: #333;
-            background: #ffdda1;
-            padding: 10px 15px;
-            border-radius: 7px;
-            box-shadow: 2px 5px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .archive a {
+            color: #67b7e6;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .archive a:hover {
+            color: #4f98d3;
         }
     </style>
 </head>
 <body>
-    <script>
-        let circles = [];
 
-        function setup() {
-            createCanvas(windowWidth, windowHeight);
-            noStroke();
-            for (let i = 0; i < 15; i++) {
-                circles.push(new Circle(random(width), random(height), random(30, 80)));
-            }
+<div class="archive">
+    <a href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
+</div>
+
+<script>
+    let petalCount = 10;
+    let angle = 0;
+    
+    function setup() {
+        createCanvas(windowWidth, windowHeight);
+        angleMode(DEGREES);
+    }
+
+    function draw() {
+        background('#f5f7fa');
+        translate(width / 2, height / 2);
+        noStroke();
+
+        // Drawing blooming flower
+        for (let i = 0; i < petalCount; i++) {
+            const hue = lerpColor(color('#ff6f69'), color('#ffcc5c'), i / petalCount);
+            fill(hue);
+            push();
+            rotate(angle + (360 / petalCount) * i);
+            ellipse(70, 0, 100, 50);
+            pop();
         }
 
-        function draw() {
-            background('#e6efff');
+        // Draw smiling face
+        fill('#ffdb9b');
+        ellipse(0, 0, 150, 150);
 
-            // Render and animate circles
-            circles.forEach(circle => {
-                circle.move();
-                circle.display();
-            });
+        // Eyes
+        fill('#fff');
+        ellipse(-25, -20, 20, 26);
+        ellipse(25, -20, 20, 26);
 
-            // Drawing the serene ground
-            fill('#c6ebc9');
-            noStroke();
-            beginShape();
-            for (let x = 0; x <= width; x += 10) {
-                let y = height - 100 + noise(x * 0.05, frameCount * 0.01) * 50;
-                vertex(x, y);
-            }
-            vertex(width, height);
-            vertex(0, height);
-            endShape(CLOSE);
-        }
+        fill('#000');
+        ellipse(-25, -20, 10, 10);
+        ellipse(25, -20, 10, 10);
 
-        class Circle {
-            constructor(x, y, diameter) {
-                this.x = x;
-                this.y = y;
-                this.diameter = diameter;
-                this.vx = random(0.5, 2);
-                this.vy = random(0.5, 2);
-                this.fillColor = color(random(180, 255), random(180, 255), random(50, 80));
-            }
+        // Mouth
+        noFill();
+        stroke('#000');
+        strokeWeight(4);
+        arc(0, 15, 60, 40, 0, 180);
 
-            move() {
-                this.x += this.vx;
-                this.y += this.vy;
+        angle += 0.5; // Adjust the rotation speed of petals
+    }
 
-                // Bounce off the edges
-                if (this.x > width || this.x < 0) {
-                    this.vx *= -1;
-                }
-                if (this.y > height || this.y < 0) {
-                    this.vy *= -1;
-                }
-            }
+    function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+    }
+</script>
 
-            display() {
-                fill(this.fillColor);
-                ellipse(this.x, this.y, this.diameter, this.diameter);
-            }
-        }
-
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
-    </script>
-    <div class="link-container">
-        <a class="archive-link" href="https://www.beautyisapattern.com/archive">View the Archive</a>
-    </div>
 </body>
 </html>
