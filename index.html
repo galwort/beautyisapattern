@@ -1,93 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embracing Harmony</title>
-    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico" type="image/x-icon">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <style>
-        body, html {
-            margin: 0;
-            overflow: hidden;
-            background-color: #f5f7fa;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ephemeral Bonds</title>
+  <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #0f1b3d;
+    }
+    .archive-link {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 10px;
+      color: #ffffff;
+      font-size: 0.8em;
+      text-decoration: none;
+      font-family: 'Arial', sans-serif;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 5px;
+    }
+    .archive-link:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script>
+    let particles = [];
+    let particlesLost = []; // Track particles that have disintegrated
+    let particleCount = 100;
 
-        .archive {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            font-family: Arial, sans-serif;
-            color: #333;
-        }
-
-        .archive a {
-            color: #67b7e6;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .archive a:hover {
-            color: #4f98d3;
-        }
-    </style>
-</head>
-<body>
-
-<div class="archive">
-    <a href="https://www.beautyisapattern.com/archive" target="_blank">Explore the Archive</a>
-</div>
-
-<script>
-    let petalCount = 10;
-    let angle = 0;
-    
     function setup() {
-        createCanvas(windowWidth, windowHeight);
-        angleMode(DEGREES);
+      createCanvas(windowWidth, windowHeight);
+      noCursor();
+      for(let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
     }
 
     function draw() {
-        background('#f5f7fa');
-        translate(width / 2, height / 2);
-        noStroke();
+      background(15, 27, 61, 70);
 
-        // Drawing blooming flower
-        for (let i = 0; i < petalCount; i++) {
-            const hue = lerpColor(color('#ff6f69'), color('#ffcc5c'), i / petalCount);
-            fill(hue);
-            push();
-            rotate(angle + (360 / petalCount) * i);
-            ellipse(70, 0, 100, 50);
-            pop();
+      // Draw lines between particles that are still visible
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          let d = dist(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
+          if (d < 150) {
+            stroke(255, 100);
+            line(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
+          }
         }
+      }
 
-        // Draw smiling face
-        fill('#ffdb9b');
-        ellipse(0, 0, 150, 150);
+      // Update and display particles
+      particles.forEach(particle => {
+        particle.update();
+        particle.show();
+      });
 
-        // Eyes
-        fill('#fff');
-        ellipse(-25, -20, 20, 26);
-        ellipse(25, -20, 20, 26);
-
-        fill('#000');
-        ellipse(-25, -20, 10, 10);
-        ellipse(25, -20, 10, 10);
-
-        // Mouth
-        noFill();
-        stroke('#000');
-        strokeWeight(4);
-        arc(0, 15, 60, 40, 0, 180);
-
-        angle += 0.5; // Adjust the rotation speed of petals
+      // Reduce visibility over time
+      particles = particles.filter(p => !p.isLost());
     }
 
-    function windowResized() {
-        resizeCanvas(windowWidth, windowHeight);
-    }
-</script>
+    class Particle {
+      constructor() {
+        this.x = random(width);
+        this.y = random(height);
+        this.vx = random(-0.5, 0.5);
+        this.vy = random(-0.5, 0.5);
+        this.alpha = 255; // Visibility
+      }
 
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+
+        // Gradually decrease visibility
+        this.alpha -= 0.5;
+      }
+
+      show() {
+        noStroke();
+        fill(255, 204, 0, this.alpha);
+        ellipse(this.x, this.y, 8);
+      }
+
+      isLost() {
+        return this.alpha <= 0;
+      }
+    }
+  </script>
+</head>
+<body>
+  <a href="https://www.beautyisapattern.com/archive" class="archive-link">Visit the Archive</a>
 </body>
 </html>
