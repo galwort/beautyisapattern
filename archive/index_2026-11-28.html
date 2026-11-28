@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Dance of Emptiness</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #1d1d1d;
+        }
+        footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            color: #aaa;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 14px;
+        }
+        a {
+            color: #aaa;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        let numParticles = 200;
+        let particles = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle(random(width), random(height)));
+            }
+        }
+
+        function draw() {
+            background(29, 29, 29, 15);
+            particles.forEach(particle => {
+                particle.update();
+                particle.display();
+            });
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.angle = random(TWO_PI);
+                this.speed = random(0.5, 1.5);
+                this.diameter = random(2, 6);
+                this.opacity = random(50, 250);
+                this.noiseOffset = random(1000);
+            }
+
+            update() {
+                this.angle = noise(this.noiseOffset) * TWO_PI * 5;
+                this.pos.x += cos(this.angle) * this.speed;
+                this.pos.y += sin(this.angle) * this.speed;
+                this.wrapEdges();
+                this.noiseOffset += 0.01;
+            }
+
+            wrapEdges() {
+                if (this.pos.x > width) this.pos.x = 0; 
+                if (this.pos.x < 0) this.pos.x = width;
+                if (this.pos.y > height) this.pos.y = 0; 
+                if (this.pos.y < 0) this.pos.y = height;
+            }
+
+            display() {
+                noStroke();
+                fill(255, this.opacity);
+                ellipse(this.pos.x, this.pos.y, this.diameter, this.diameter);
+            }
+        }
+    </script>
+
+    <footer>
+        <a href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Pattern Archive</a>
+    </footer>
+
+</body>
+</html>

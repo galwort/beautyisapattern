@@ -1,103 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ephemeral Bonds</title>
-  <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: #0f1b3d;
-    }
-    .archive-link {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 10px;
-      color: #ffffff;
-      font-size: 0.8em;
-      text-decoration: none;
-      font-family: 'Arial', sans-serif;
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 5px;
-    }
-    .archive-link:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-  </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <script>
-    let particles = [];
-    let particlesLost = []; // Track particles that have disintegrated
-    let particleCount = 100;
-
-    function setup() {
-      createCanvas(windowWidth, windowHeight);
-      noCursor();
-      for(let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-      }
-    }
-
-    function draw() {
-      background(15, 27, 61, 70);
-
-      // Draw lines between particles that are still visible
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          let d = dist(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
-          if (d < 150) {
-            stroke(255, 100);
-            line(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Dance of Emptiness</title>
+    <link rel="icon" href="https://www.beautyisapattern.com/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #1d1d1d;
         }
-      }
-
-      // Update and display particles
-      particles.forEach(particle => {
-        particle.update();
-        particle.show();
-      });
-
-      // Reduce visibility over time
-      particles = particles.filter(p => !p.isLost());
-    }
-
-    class Particle {
-      constructor() {
-        this.x = random(width);
-        this.y = random(height);
-        this.vx = random(-0.5, 0.5);
-        this.vy = random(-0.5, 0.5);
-        this.alpha = 255; // Visibility
-      }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-
-        if (this.x < 0 || this.x > width) this.vx *= -1;
-        if (this.y < 0 || this.y > height) this.vy *= -1;
-
-        // Gradually decrease visibility
-        this.alpha -= 0.5;
-      }
-
-      show() {
-        noStroke();
-        fill(255, 204, 0, this.alpha);
-        ellipse(this.x, this.y, 8);
-      }
-
-      isLost() {
-        return this.alpha <= 0;
-      }
-    }
-  </script>
+        footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            color: #aaa;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 14px;
+        }
+        a {
+            color: #aaa;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-  <a href="https://www.beautyisapattern.com/archive" class="archive-link">Visit the Archive</a>
+
+    <script>
+        let numParticles = 200;
+        let particles = [];
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle(random(width), random(height)));
+            }
+        }
+
+        function draw() {
+            background(29, 29, 29, 15);
+            particles.forEach(particle => {
+                particle.update();
+                particle.display();
+            });
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.pos = createVector(x, y);
+                this.angle = random(TWO_PI);
+                this.speed = random(0.5, 1.5);
+                this.diameter = random(2, 6);
+                this.opacity = random(50, 250);
+                this.noiseOffset = random(1000);
+            }
+
+            update() {
+                this.angle = noise(this.noiseOffset) * TWO_PI * 5;
+                this.pos.x += cos(this.angle) * this.speed;
+                this.pos.y += sin(this.angle) * this.speed;
+                this.wrapEdges();
+                this.noiseOffset += 0.01;
+            }
+
+            wrapEdges() {
+                if (this.pos.x > width) this.pos.x = 0; 
+                if (this.pos.x < 0) this.pos.x = width;
+                if (this.pos.y > height) this.pos.y = 0; 
+                if (this.pos.y < 0) this.pos.y = height;
+            }
+
+            display() {
+                noStroke();
+                fill(255, this.opacity);
+                ellipse(this.pos.x, this.pos.y, this.diameter, this.diameter);
+            }
+        }
+    </script>
+
+    <footer>
+        <a href="https://www.beautyisapattern.com/archive" target="_blank">Visit the Pattern Archive</a>
+    </footer>
+
 </body>
 </html>
